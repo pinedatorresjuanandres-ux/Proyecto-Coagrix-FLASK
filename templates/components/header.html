@@ -1,0 +1,94 @@
+{# ============================================================
+   Header unificado de CoAgrix — un solo componente reutilizable
+   Incluido desde base.html con: {% include 'components/header.html' %}
+   ============================================================ #}
+<header class="cx-header">
+    <div class="cx-header-inner">
+        <a href="{{ url_for('index') }}" class="cx-brand">
+            <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="CoAgrix">
+            <span class="cx-brand-text">CoAgrix</span>
+        </a>
+
+        <button class="cx-menu-toggle" id="cxMenuToggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+
+        <nav class="cx-nav" id="cxNav">
+            <a href="{{ url_for('index') }}">Inicio</a>
+            <a href="{{ url_for('product.catalog_route') }}">Catálogo</a>
+            {% if session.get('user_id') %}
+                {% if session.get('role_name') == 'Campesino' %}
+                    <a href="{{ url_for('farmer.dashboard') }}">Mi Panel</a>
+                    <a href="{{ url_for('farmer.publications') }}">Mis Publicaciones</a>
+                    <a href="{{ url_for('farmer.orders_route') }}">Pedidos Recibidos</a>
+                {% elif session.get('role_name') == 'Empresa' %}
+                    <a href="{{ url_for('company.dashboard_route') }}">Mi Panel</a>
+                    <a href="{{ url_for('cart.orders_route') }}">Mis Pedidos</a>
+                {% elif session.get('role_name') == 'Comerciante' %}
+                    <a href="{{ url_for('merchant.dashboard_route') }}">Mi Panel</a>
+                    <a href="{{ url_for('merchant.compare_route') }}">Comparar Precios</a>
+                    <a href="{{ url_for('cart.orders_route') }}">Mis Pedidos</a>
+                {% elif session.get('role_name') == 'Administrador' %}
+                    <a href="{{ url_for('admin.dashboard_route') }}">Panel Admin</a>
+                {% endif %}
+            {% else %}
+                <a href="{{ url_for('index') }}#funcionalidades">Funcionalidades</a>
+                <a href="{{ url_for('index') }}#contacto">Contacto</a>
+            {% endif %}
+        </nav>
+
+        <div class="cx-actions">
+            {% if session.get('user_id') %}
+                {% if session.get('role_name') in ('Empresa', 'Comerciante') %}
+                    <a href="{{ url_for('cart.view_route') }}" class="cx-icon-btn" title="Carrito">🛒</a>
+                {% endif %}
+
+                <a href="{{ url_for('message.inbox_route') }}" class="cx-icon-btn" title="Mensajes">
+                    ✉️
+                    {% if unread_messages_count and unread_messages_count > 0 %}
+                        <span class="cx-badge">{{ unread_messages_count }}</span>
+                    {% endif %}
+                </a>
+
+                <div class="cx-user-menu">
+                    <button class="cx-user-btn" id="cxUserBtn" type="button">
+                        <span class="cx-avatar">{{ session.get('user_name', '?')[0]|upper }}</span>
+                        <span>{{ session.get('user_name') }}</span>
+                    </button>
+                    <div class="cx-dropdown" id="cxUserDropdown">
+                        {% if session.get('role_name') == 'Campesino' %}
+                            <a href="{{ url_for('farmer.profile') }}">👤 Mi Perfil</a>
+                        {% elif session.get('role_name') == 'Empresa' %}
+                            <a href="{{ url_for('company.profile_route') }}">👤 Mi Perfil</a>
+                        {% endif %}
+                        <a href="{{ url_for('message.inbox_route') }}">✉️ Mensajes</a>
+                        <hr>
+                        <a href="{{ url_for('auth.logout_action') }}">🚪 Cerrar Sesión</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{{ url_for('auth.login_page') }}" class="btn-outline btn-sm">Iniciar Sesión</a>
+                <a href="{{ url_for('auth.register_page') }}" class="btn-primary btn-sm">Registrarse</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+<script>
+    (function () {
+        const toggle = document.getElementById('cxMenuToggle');
+        const nav = document.getElementById('cxNav');
+        if (toggle && nav) {
+            toggle.addEventListener('click', () => nav.classList.toggle('open'));
+        }
+        const userBtn = document.getElementById('cxUserBtn');
+        const dropdown = document.getElementById('cxUserDropdown');
+        if (userBtn && dropdown) {
+            userBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('open');
+            });
+            document.addEventListener('click', () => dropdown.classList.remove('open'));
+        }
+    })();
+</script>

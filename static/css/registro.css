@@ -1,0 +1,154 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e293b,#16a34a);
+}
+
+.registro{
+    width:420px;
+    padding:35px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+    color:white;
+}
+
+.rol-icono {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 34px;
+}
+
+.volver {
+    margin-top: 18px;
+    text-align: center;
+}
+
+.volver a {
+    color: #cbd5e1;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.volver a:hover {
+    color: #86efac;
+    text-decoration: underline;
+}
+
+h1{
+    text-align:center;
+    margin-top:10px;
+}
+
+.subtitulo{
+    text-align:center;
+    color:#d1d5db;
+    margin-bottom:25px;
+}
+
+.campo{
+    margin-bottom:15px;
+}
+
+.campo label{
+    display:block;
+    margin-bottom:6px;
+    font-size:14px;
+}
+
+.campo input , .campo select{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:12px;
+    outline:none;
+    background:rgba(255,255,255,0.12);
+    color:white;
+}
+
+.campo input::placeholder{
+    color:#d1d5db;
+}
+
+.campo input:focus{
+    border:1px solid #22c55e;
+    box-shadow:0 0 10px rgba(34,197,94,.5);
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+
+    background:linear-gradient(135deg,#22c55e,#15803d);
+
+    color:white;
+    font-size:16px;
+    font-weight:600;
+
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(34,197,94,.4);
+}
+
+.login-link{
+    text-align:center;
+    margin-top:20px;
+}
+
+.login-link a{
+    color:#86efac;
+    text-decoration:none;
+}
+
+.login-link a:hover{
+    text-decoration:underline;
+}
+
+.campo select{
+    width:100%;
+    padding:13px;
+    border:none;
+    outline:none;
+    border-radius:12px;
+
+    background:rgba(255,255,255,0.12);
+    color:white;
+    font-size:14px;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.campo select:focus{
+    border:1px solid #22c55e;
+    box-shadow:0 0 10px rgba(34,197,94,.5);
+}
+
+.campo select option{
+    background:#1e293b;
+    color:white;
+}

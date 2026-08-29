@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Mis Publicaciones</title>
+
+    <link rel="stylesheet" href="../static/css/mis_publicaciones.css" />
+    <link rel="stylesheet" href="../static/css/header.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <h1>🌱 Mis Publicaciones</h1>
+
+        <a href="crear-publicacion.html" class="btnNueva">
+          <i class="fa-solid fa-plus"></i>
+
+          Nueva publicación
+        </a>
+      </header>
+
+      <div class="busqueda">
+        <input type="text" placeholder="Buscar publicación..." />
+
+        <select>
+          <option>Todas las categorías</option>
+
+          <option>Frutas</option>
+
+          <option>Verduras</option>
+
+          <option>Tubérculos</option>
+
+          <option>Granos</option>
+        </select>
+      </div>
+
+      <section class="productos">
+        <div class="card">
+          <img src="img/default.jpg" />
+
+          <div class="contenido">
+            <h2>Tomate Chonto</h2>
+
+            <p>$3.500 / Kg</p>
+
+            <span>Publicado hace 2 días</span>
+
+            <div class="acciones">
+              <button class="ver">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+
+              <button class="editar">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+
+              <button class="eliminar">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="img/default.jpg" />
+
+          <div class="contenido">
+            <h2>Papa Pastusa</h2>
+
+            <p>$2.200 / Kg</p>
+
+            <span>Publicado hace 5 días</span>
+
+            <div class="acciones">
+              <button class="ver">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+
+              <button class="editar">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+
+              <button class="eliminar">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+{# ============================================================
+   Footer unificado de CoAgrix — extraído de base.html para que sea
+   un componente independiente y reutilizable, igual que el header.
+   Incluido desde base.html con: {% include 'components/footer.html' %}
+   ============================================================ #}
+<footer class="footer">
+    <div class="container footer-inner">
+        <div class="footer-brand">
+            <div class="logo" style="display:flex; align-items:center; gap:10px;">
+                <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="CoAgrix" style="height:38px; width:38px; object-fit:cover; border-radius:8px;">
+                <h2 style="margin:0;">CoAgrix</h2>
+            </div>
+            <p>Conectando el campo con el mercado mediante tecnología e innovación.</p>
+        </div>
+        <div class="footer-links">
+            <h5>Plataforma</h5>
+            <a href="{{ url_for('index') }}">Inicio</a>
+            <a href="{{ url_for('product.catalog_route') }}">Catálogo</a>
+            <a href="{{ url_for('index') }}#funcionalidades">Funcionalidades</a>
+        </div>
+        <div class="footer-links">
+            <h5>Cuenta</h5>
+            <a href="{{ url_for('auth.register_page') }}">Registrarse</a>
+            <a href="{{ url_for('auth.login_page') }}">Iniciar Sesión</a>
+        </div>
+        <div class="footer-links">
+            <h5>Legal</h5>
+            <a href="#">Términos y Condiciones</a>
+            <a href="#">Política de Privacidad</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container">
+            <p>© 2026 CoAgrix – Todos los derechos reservados. Hecho con 💚 para el campo.</p>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoAgrix – Agricultura e Innovación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <div class="container header-inner">
+            <div class="logo">
+                <!-- Si no tienes imagen aún, este texto estilizado funciona perfecto -->
+                <span class="logo-icon">🌾</span>
+                <h2>CoAgrix</h2>
+            </div>
+            <nav class="nav-menu" id="navMenu">
+                <ul>
+                    <li><a href="#inicio" class="active">Inicio</a></li>
+                    <li><a href="#funcionalidades">Funcionalidades</a></li>
+                    <li><a href="#testimonios">Testimonios</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="{{ url_for('auth.login_page') }}" class="btn-outline">Iniciar Sesión</a>
+                <a href="{{ url_for('auth.register_page') }}" class="btn-primary">Registrarse</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero" id="inicio">
+        <div class="hero-bg">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+            <div class="grid-lines"></div>
+        </div>
+        <div class="container hero-content">
+            <span class="hero-badge">🚀 La evolución del campo colombiano</span>
+            <h1>Conectamos el <span class="highlight">Campo</span> con el <span class="highlight">Mercado</span></h1>
+            <p class="hero-desc">CoAgrix facilita la comunicación entre agricultores y empresas compradoras, digitalizando la gestión de cultivos, inventarios y comercialización agrícola de forma simple y segura.</p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('auth.register_page') }}" class="btn-primary btn-lg">Comenzar Gratis</a>
+                <a href="#funcionalidades" class="btn-ghost btn-lg">Ver Más ↓</a>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NUEVA SECCIÓN: ESTADÍSTICAS DE IMPACTO (Genera confianza) -->
+    <section class="stats">
+        <div class="container stats-grid">
+            <div class="stat-item">
+                <h3>+500</h3>
+                <p>Agricultores Registrados</p>
+            </div>
+            <div class="stat-item">
+                <h3>+12k</h3>
+                <p>Toneladas Comercializadas</p>
+            </div>
+            <div class="stat-item">
+                <h3>98%</h3>
+                <p>Satisfacción del Cliente</p>
+            </div>
+            <div class="stat-item">
+                <h3>24/7</h3>
+                <p>Soporte Técnico</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features" id="funcionalidades">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Funcionalidades</span>
+                <h2>Todo lo que necesitas en un solo lugar</h2>
+                <p>Herramientas diseñadas para modernizar y potenciar el sector agroindustrial.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card glass">
+                    <div class="feat-icon">📊</div>
+                    <h4>Gestión de Cultivos</h4>
+                    <p>Registra y monitorea tus cultivos con información detallada de producción, fechas y cantidades.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="feat-icon">💬</div>
+                    <h4>Mensajería Directa</h4>
+                    <p>Comunícate sin intermediarios con compradores y vendedores desde la plataforma.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="feat-icon">📦</div>
+                    <h4>Inventario Inteligente</h4>
+                    <p>Controla tus cantidades disponibles y recibe alertas de stock en tiempo real.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="feat-icon">📅</div>
+                    <h4>Coordinación</h4>
+                    <p>Agenda encuentros y reuniones comerciales de forma fácil, rápida y organizada.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="feat-icon">⭐</div>
+                    <h4>Sistema de Reputación</h4>
+                    <p>Construye confianza con el sistema de calificaciones verificadas entre usuarios.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="feat-icon">📈</div>
+                    <h4>Reportes de Venta</h4>
+                    <p>Genera reportes detallados de producción y ventas para tomar mejores decisiones.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NUEVA SECCIÓN: TESTIMONIOS (Prueba social) -->
+    <section class="testimonials" id="testimonios">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Testimonios</span>
+                <h2>Lo que dice el campo</h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="quote">"Desde que uso CoAgrix, he logrado vender mi cosecha de café un 30% más rápido y a mejor precio. La plataforma es muy fácil de usar."</p>
+                    <div class="author">
+                        <div class="author-avatar">👨‍🌾</div>
+                        <div>
+                            <h5>Carlos Mendoza</h5>
+                            <span>Agricultor, Huila</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="quote">"Como empresa compradora, la transparencia en el inventario y la comunicación directa nos ha ahorrado semanas de logística."</p>
+                    <div class="author">
+                        <div class="author-avatar">🏢</div>
+                        <div>
+                            <h5>María Fernanda López</h5>
+                            <span>Gerente de Compras, AgroExport S.A.S</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta" id="contacto">
+        <div class="cta-bg">
+            <div class="orb orb-cta"></div>
+        </div>
+        <div class="container cta-inner">
+            <h2>¿Listo para digitalizar<br>tu negocio agrícola?</h2>
+            <p>Únete a cientos de agricultores y empresas que ya están creciendo con CoAgrix.</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('auth.register_page') }}" class="btn-accent btn-lg">Crear Cuenta Gratis</a>
+                <a href="{{ url_for('auth.login_page') }}" class="btn-outline-light btn-lg">Ya tengo cuenta</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-icon">🌾</span>
+                    <h2>CoAgrix</h2>
+                </div>
+                <p>Conectando el campo con el mercado mediante tecnología e innovación.</p>
+            </div>
+            <div class="footer-links">
+                <h5>Plataforma</h5>
+                <a href="#inicio">Inicio</a>
+                <a href="#funcionalidades">Funcionalidades</a>
+                <a href="#testimonios">Testimonios</a>
+            </div>
+            <div class="footer-links">
+                <h5>Cuenta</h5>
+                <a href="{{ url_for('auth.register_page') }}">Registrarse</a>
+                <a href="{{ url_for('auth.login_page') }}">Iniciar Sesión</a>
+                <a href="#">Recuperar Contraseña</a>
+            </div>
+            <div class="footer-links">
+                <h5>Legal</h5>
+                <a href="#">Términos y Condiciones</a>
+                <a href="#">Política de Privacidad</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2026 CoAgrix – Todos los derechos reservados. Hecho con 💚 para el campo.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script mínimo para el menú móvil -->
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

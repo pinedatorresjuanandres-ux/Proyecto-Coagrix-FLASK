@@ -1,0 +1,346 @@
+/* ============================================================
+   CoAgrix — seleccion-perfil.css
+   Portal de acceso por perfil (Campesino / Empresa / Comerciante)
+   Sistema de diseño: papel cálido + verde bosque + tonos tierra + amarillo suave
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    /* --- Paleta --- */
+    --paper: #FBF9F3;          /* fondo cálido, no blanco puro */
+    --paper-deep: #F3EEE1;
+    --ink: #23301E;            /* texto principal, verde-carbón */
+    --ink-soft: #5B6355;
+    --forest: #1F3D2B;         /* verde bosque profundo */
+    --leaf: #3F7D4E;           /* verde agrícola primario */
+    --leaf-light: #DCEBDC;
+    --wheat: #C79A56;          /* tierra / trigo */
+    --clay: #A9714F;           /* tierra oscura */
+    --sun: #E8B23D;            /* amarillo suave */
+    --sun-soft: #F6E3B4;
+    --radius-lg: 28px;
+    --radius-md: 16px;
+    --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+
+
+.cx-scope * { box-sizing: border-box; }
+.cx-scope h1, .cx-scope h2, .cx-scope h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+}
+
+
+
+/* ============================================================
+   TRIPTICO DE PERFILES
+   ============================================================ */
+.cx-profiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    padding: 40px clamp(20px,5vw,64px) 80px;
+    margin-top: 200px;
+    margin-bottom: 50px;
+}
+
+.cx-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 580px;
+    border-radius: 28px;
+    overflow: hidden;
+    text-decoration: none;
+    color: white;
+    border: 1px solid rgba(255,255,255,.12);
+    transition: .4s;
+}
+
+.cx-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 60px rgba(0,0,0,.25);
+}
+
+.cx-card:nth-child(1) { animation-delay: .05s; }
+.cx-card:nth-child(2) { animation-delay: .18s; }
+.cx-card:nth-child(3) { animation-delay: .31s; }
+
+@keyframes cx-rise {
+  to { opacity: 1; translate: 0 0; }
+}
+
+.cx-card:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 3px;
+}
+
+.cx-card-photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.06);
+  transition: transform .8s var(--ease);
+}
+
+.cx-card:hover .cx-card-photo,
+.cx-card:focus-visible .cx-card-photo {
+  transform: scale(1.14);
+}
+
+.cx-card-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(15, 26, 18, 0.15) 0%,
+    rgba(15, 26, 18, 0.35) 45%,
+    var(--scrim, rgba(20, 36, 24, 0.92)) 100%);
+  transition: background .5s var(--ease);
+}
+
+.cx-card--campesino { --scrim: rgba(21, 46, 28, 0.94); }
+.cx-card--empresa    { --scrim: rgba(45, 36, 22, 0.94); }
+.cx-card--comerciante{ --scrim: rgba(58, 42, 12, 0.94); }
+
+.cx-card:hover,
+.cx-card:focus-visible {
+  transform: translateY(-8px) scale(1.015);
+  box-shadow: 0 26px 60px rgba(31, 61, 43, 0.28);
+}
+
+.cx-card-body {
+  position: relative;
+  z-index: 2;
+  padding: clamp(22px, 3vw, 30px);
+}
+
+.cx-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  backdrop-filter: blur(6px);
+}
+
+.cx-card-icon svg { width: 22px; height: 22px; }
+
+.cx-card-tag {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sun-soft);
+  margin-bottom: 8px;
+}
+
+.cx-card h2 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.cx-card-text {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.88);
+  max-width: 30ch;
+}
+
+/* Nota de campo: descripción adicional que aparece en hover */
+.cx-card-note {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows .45s var(--ease), opacity .35s ease .05s, margin-top .45s var(--ease);
+  margin-top: 0;
+}
+
+.cx-card-note > div { overflow: hidden; }
+
+.cx-card:hover .cx-card-note,
+.cx-card:focus-visible .cx-card-note {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 12px;
+}
+
+.cx-card-note p {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.78);
+  border-top: 1px solid rgba(255,255,255,0.18);
+  padding-top: 12px;
+  max-width: 32ch;
+}
+
+.cx-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 12px 20px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.35);
+  color: #fff;
+  transition: background .35s var(--ease), color .35s var(--ease), gap .35s var(--ease), border-color .35s var(--ease);
+}
+
+.cx-card-cta svg {
+  width: 16px;
+  height: 16px;
+  transition: transform .35s var(--ease);
+}
+
+.cx-card--campesino .cx-card-cta:is(:hover, :focus-visible),
+.cx-card--campesino:hover .cx-card-cta,
+.cx-card--campesino:focus-visible .cx-card-cta {
+  background: var(--leaf);
+  border-color: var(--leaf);
+}
+
+.cx-card--empresa:hover .cx-card-cta,
+.cx-card--empresa:focus-visible .cx-card-cta {
+  background: var(--wheat);
+  border-color: var(--wheat);
+  color: var(--forest);
+}
+
+.cx-card--comerciante:hover .cx-card-cta,
+.cx-card--comerciante:focus-visible .cx-card-cta {
+  background: var(--sun);
+  border-color: var(--sun);
+  color: var(--forest);
+}
+
+.cx-card:hover .cx-card-cta svg,
+.cx-card:focus-visible .cx-card-cta svg {
+  transform: translateX(4px);
+}
+
+.cx-card-badge {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 3;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--forest);
+  background: var(--sun-soft);
+  padding: 6px 12px;
+  border-radius: 100px;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 980px) {
+  .cx-profiles {
+    grid-template-columns: 1fr;
+  }
+  .cx-card { min-height: 340px; }
+  .cx-card-text, .cx-card-note p { max-width: none; }
+}
+
+@media (max-width: 520px) {
+  .cx-topbar-note { display: none; }
+  .cx-card { min-height: 300px; }
+}
+
+/* ============================================================
+   ACCESIBILIDAD — reduce motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .cx-card,
+  .cx-card-photo,
+  .cx-card-note,
+  .cx-root-path,
+  .cx-sprout {
+    transition: none !important;
+    animation: none !important;
+  }
+  .cx-card { opacity: 1; translate: 0; }
+  .cx-root-path { stroke-dashoffset: 0; }
+  .cx-sprout { opacity: 1; transform: none; }
+}
+/* ============================
+   FOOTER
+   ============================ */
+.footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 60px 0 0;
+    background: linear-gradient(135deg, #0f172a, #1e293b, #16a34a);
+    ;
+}
+
+.footer-inner {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 48px;
+    padding-bottom: 48px;
+}
+
+.footer-brand .logo {
+    margin-bottom: 14px;
+}
+
+.footer-brand p {
+    font-size: 14px;
+    color: var(--white);
+    max-width: 260px;
+    line-height: 1.7;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-links h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.footer-links a {
+    font-size: 14px;
+    color: var(--white);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.footer-links a:hover {
+    color: var(--green-light);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 20px 40px;
+    text-align: center;
+}
+
+.footer-bottom p {
+    font-size: 13px;
+    color: var(--green-dark);
+}

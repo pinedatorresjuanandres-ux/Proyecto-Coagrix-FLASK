@@ -1,0 +1,13 @@
+Flask==3.0.0
+Flask-Session==0.5.0
+Flask-WTF==1.2.1
+Flask-Limiter==3.8.0
+mysql-connector-python==8.2.0
+python-dotenv==1.0.0
+Werkzeug==3.0.1
+Pillow==10.4.0
+waitress==3.0.0
+
+# Testing (dev only)
+pytest==8.3.3
+pytest-mock==3.14.0

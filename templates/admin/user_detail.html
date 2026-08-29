@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ user.nombre }} - CoAgrix{% endblock %}
+{% block content %}
+<div class="cx-admin-layout">
+    {% include 'admin/_sidebar.html' %}
+    {% set active = 'users' %}
+
+    <div class="cx-admin-content">
+        <a href="{{ url_for('admin.users_route') }}" style="color: var(--cx-green); text-decoration: none;">← Volver a usuarios</a>
+
+        <div class="cx-card" style="max-width: 600px; margin-top: 20px;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                <div class="cx-avatar" style="width: 60px; height: 60px; font-size: 1.5em;">{{ user.nombre[0]|upper }}</div>
+                <div>
+                    <h2 style="margin: 0;">{{ user.nombre }}</h2>
+                    <span class="cx-badge-status {{ 'cx-badge-success' if user.estado == 'Activo' else 'cx-badge-danger' }}">{{ user.estado }}</span>
+                </div>
+            </div>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Rol:</strong> {{ user.rol_nombre }}</p>
+            <p><strong>Registrado:</strong> {{ user.fecha_registro }}</p>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <form method="POST" action="{{ url_for('admin.toggle_user_route', usuario_id=user.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn-outline">{{ 'Desactivar Usuario' if user.estado == 'Activo' else 'Activar Usuario' }}</button>
+                </form>
+                <form method="POST" action="{{ url_for('admin.delete_user_route', usuario_id=user.id) }}"
+                      data-confirm="¿Eliminar este usuario permanentemente?" data-confirm-title="Eliminar usuario">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn-danger">Eliminar Usuario</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

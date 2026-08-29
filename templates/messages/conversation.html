@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Chat con {{ otro_usuario.nombre }} - CoAgrix{% endblock %}
+{% block extra_css %}
+<style>
+    .cx-chat-wrap {
+        max-width: 900px; margin: 24px auto; display: grid;
+        grid-template-columns: 1fr; border-radius: var(--cx-radius);
+        overflow: hidden; box-shadow: var(--cx-shadow);
+    }
+    .cx-chat-header {
+        background: var(--cx-green); color: #fff; padding: 16px 20px;
+        display: flex; align-items: center; gap: 12px;
+    }
+    .cx-chat-header .cx-avatar { background: rgba(255,255,255,0.25); }
+    .cx-chat-body {
+        background: #ECE5DD; height: 480px; overflow-y: auto;
+        padding: 20px; display: flex; flex-direction: column; gap: 4px;
+    }
+    .cx-msg-row { display: flex; margin-bottom: 6px; }
+    .cx-msg-row.mine { justify-content: flex-end; }
+    .cx-msg-bubble {
+        max-width: 65%; padding: 9px 14px; border-radius: 12px;
+        font-size: 0.95em; line-height: 1.4; box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+        position: relative;
+    }
+    .cx-msg-row.mine .cx-msg-bubble { background: #DCF8C6; border-bottom-right-radius: 2px; }
+    .cx-msg-row.theirs .cx-msg-bubble { background: #fff; border-bottom-left-radius: 2px; }
+    .cx-msg-time { font-size: 0.7em; color: #999; margin-top: 3px; text-align: right; }
+    .cx-chat-input {
+        background: var(--cx-gray-light); padding: 14px 16px;
+        display: flex; gap: 10px; align-items: center;
+    }
+    .cx-chat-input input {
+        flex: 1; border: none; border-radius: 999px; padding: 12px 18px;
+        font-size: 0.95em; outline: none;
+    }
+    .cx-chat-send {
+        background: var(--cx-green); color: #fff; border: none; width: 44px; height: 44px;
+        border-radius: 50%; cursor: pointer; font-size: 1.2em; display: flex;
+        align-items: center; justify-content: center; transition: var(--cx-transition);
+    }
+    .cx-chat-send:hover { background: var(--cx-green-dark); }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <a href="{{ url_for('message.inbox_route') }}" style="color: var(--cx-green); text-decoration: none; display:block; margin-top:16px;">← Mis mensajes</a>
+
+    <div class="cx-chat-wrap">
+        <div class="cx-chat-header">
+            <span class="cx-avatar">{{ otro_usuario.nombre[0]|upper }}</span>
+            <div>
+                <strong>{{ otro_usuario.nombre }}</strong>
+                <div style="font-size: 0.8em; opacity: 0.85;">● en línea</div>
+            </div>
+        </div>
+
+        <div id="chat-box" class="cx-chat-body">
+            {% if messages %}
+                {% for m in messages %}
+                    {% set es_mio = m.remitente_id == session.get('user_id') %}
+                    <div class="cx-msg-row {{ 'mine' if es_mio else 'theirs' }}">
+                        <div class="cx-msg-bubble">
+                            <div style="white-space: pre-wrap;">{{ m.contenido }}</div>
+                            <div class="cx-msg-time">{{ m.fecha }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p style="color: #999; text-align: center; margin: auto;">Aún no hay mensajes. ¡Escribe el primero!</p>
+            {% endif %}
+        </div>
+
+        <form method="POST" class="cx-chat-input">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="text" name="contenido" placeholder="Escribe un mensaje..." required autocomplete="off">
+            <button type="submit" class="cx-chat-send" title="Enviar">➤</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const chatBox = document.getElementById('chat-box');
+    if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+{% endblock %}

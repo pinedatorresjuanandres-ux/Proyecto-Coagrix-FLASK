@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% from 'components/product_card.html' import render_product_card %}
+{% from 'components/pagination.html' import render_pagination %}
+{% from 'components/empty_state.html' import render_empty_state %}
+
+{% block title %}Catálogo de Productos - CoAgrix{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+    .catalogo-buscador{
+        display:flex;
+        gap:15px;
+        margin: 20px 0 30px;
+    }
+    .catalogo-buscador input{
+        flex:1;
+        padding:14px 18px;
+        border:1px solid #ddd;
+        border-radius:10px;
+        font-size:15px;
+    }
+    .catalogo-buscador button{
+        background:var(--primary, #1A4D2E);
+        color:white;
+        border:none;
+        padding:0 26px;
+        border-radius:10px;
+        cursor:pointer;
+        font-size:15px;
+    }
+    .filtros-panel{
+        background:#f9f9f9;
+        padding:20px;
+        border-radius:14px;
+        height:fit-content;
+    }
+    .filtros-panel .campo-filtro{
+        margin-bottom:20px;
+    }
+    .filtros-panel label{
+        display:block;
+        font-weight:bold;
+        margin-bottom:8px;
+        font-size:14px;
+    }
+    .filtros-panel select,
+    .filtros-panel input{
+        width:100%;
+        padding:10px;
+        border:1px solid #ddd;
+        border-radius:8px;
+        font-size:14px;
+    }
+    .rango-precio{
+        display:flex;
+        gap:8px;
+    }
+    .filtro-transporte-check{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        font-weight:normal;
+        cursor:pointer;
+    }
+    .filtro-transporte-check input{
+        width:auto;
+        accent-color:#2E7D32;
+    }
+    @media(max-width:900px){
+        .catalogo-grid{
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 0;">
+    <div class="section-header">
+        <h2>Catálogo de Productos</h2>
+        <p>Explora los productos disponibles de nuestros agricultores.</p>
+    </div>
+
+    <form method="GET" action="{{ url_for('product.catalog_route') }}" class="catalogo-buscador">
+        <input type="text" name="buscar" placeholder="Buscar producto por nombre..." value="{{ filters.buscar if filters else '' }}">
+        <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
+    </form>
+
+    <div class="catalogo-grid" style="display: grid; grid-template-columns: 260px 1fr; gap: 30px;">
+        <!-- Filtros -->
+        <div class="filtros-panel">
+            <h4 style="margin-top: 0;">Filtros</h4>
+            <form method="GET" action="{{ url_for('product.catalog_route') }}">
+                {% if filters and filters.buscar %}
+                <input type="hidden" name="buscar" value="{{ filters.buscar }}">
+                {% endif %}
+
+                <div class="campo-filtro">
+                    <label>Categoría</label>
+                    <select name="categoria">
+                        <option value="">Todas</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if filters and filters.categoria|string == cat.id|string %}selected{% endif %}>{{ cat.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="campo-filtro">
+                    <label>Ubicación</label>
+                    <select name="municipio">
+                        <option value="">Todas</option>
+                        {% for mun in municipios %}
+                        <option value="{{ mun.municipio }}" {% if filters and filters.municipio == mun.municipio %}selected{% endif %}>{{ mun.municipio }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="campo-filtro">
+                    <label>Unidad de medida</label>
+                    <select name="unidad">
+                        <option value="">Todas</option>
+                        {% for u in unidades %}
+                        <option value="{{ u.unidad_medida }}" {% if filters and filters.unidad == u.unidad_medida %}selected{% endif %}>{{ u.unidad_medida }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="campo-filtro">
+                    <label>Precio (COP)</label>
+                    <div class="rango-precio">
+                        <input type="number" name="precio_min" placeholder="Mín" min="0" value="{{ filters.precio_min if filters else '' }}">
+                        <input type="number" name="precio_max" placeholder="Máx" min="0" value="{{ filters.precio_max if filters else '' }}">
+                    </div>
+                </div>
+
+                <div class="campo-filtro">
+                    <label class="filtro-transporte-check">
+                        <input type="checkbox" name="transporte" value="1" {% if filters and filters.transporte %}checked{% endif %}>
+                        🚚 Solo con transporte
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%;">Filtrar</button>
+            </form>
+        </div>
+
+        <!-- Productos -->
+        <div>
+            {% if publications %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;">
+                {% for pub in publications %}
+                {{ render_product_card(pub, show_favorite=session.get('user_id') is not none, is_favorite=favorite_ids and pub.id in favorite_ids) }}
+                {% endfor %}
+            </div>
+            {{ render_pagination(page, total_pages, total_results, 'product.catalog_route') }}
+            {% else %}
+            {{ render_empty_state('🔎', 'Sin resultados', 'No hay productos disponibles con los filtros seleccionados. Prueba ajustando la búsqueda o los filtros.') }}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Moderación de Publicaciones - CoAgrix{% endblock %}
+{% block content %}
+<div class="cx-admin-layout">
+    {% include 'admin/_sidebar.html' %}
+    {% set active = 'publications' %}
+
+    <div class="cx-admin-content">
+        <div class="section-header" style="margin-bottom: 10px;">
+            <span class="section-tag">Administración</span>
+            <h2>Moderación de Publicaciones</h2>
+            <p>{{ publications|length }} publicación{{ 'es' if publications|length != 1 else '' }} encontrada{{ 's' if publications|length != 1 else '' }}.</p>
+        </div>
+
+        <form method="GET" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+            <input type="text" name="buscar" placeholder="Buscar por título o campesino..." value="{{ filters.get('buscar', '') }}"
+                   class="cx-input" style="flex: 1; min-width: 220px;">
+            <select name="estado" class="cx-select">
+                <option value="">Todos los estados</option>
+                <option value="Activa" {% if filters.get('estado') == 'Activa' %}selected{% endif %}>Activa</option>
+                <option value="Inactiva" {% if filters.get('estado') == 'Inactiva' %}selected{% endif %}>Inactiva / Rechazada</option>
+                <option value="Agotada" {% if filters.get('estado') == 'Agotada' %}selected{% endif %}>Agotada</option>
+            </select>
+            <button type="submit" class="btn-primary">Filtrar</button>
+            {% if filters %}
+            <a href="{{ url_for('admin.publications_route') }}" class="btn-outline">Limpiar</a>
+            {% endif %}
+        </form>
+
+        <div class="cx-card" style="padding: 0; overflow-x: auto;">
+            <table class="cx-table">
+                <thead>
+                    <tr>
+                        <th>Publicación</th><th>Campesino</th><th>Precio</th><th>Estado</th><th>Fecha</th><th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pub in publications %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('product.detail', publicacion_id=pub.id) }}" style="color: var(--cx-green-dark); text-decoration: none; font-weight: 600;">
+                                {{ pub.titulo }}
+                            </a>
+                            <br><span style="color:#999; font-size:0.85em;">{{ pub.producto_nombre }}</span>
+                        </td>
+                        <td>{{ pub.campesino_nombre }}</td>
+                        <td>{{ pub.precio|cop }}</td>
+                        <td>
+                            <span class="cx-badge-status {{ 'cx-badge-success' if pub.estado == 'Activa' else ('cx-badge-warning' if pub.estado == 'Agotada' else 'cx-badge-danger') }}">
+                                {{ pub.estado }}
+                            </span>
+                        </td>
+                        <td>{{ pub.fecha_publicacion }}</td>
+                        <td style="white-space: nowrap;">
+                            {% if pub.estado != 'Activa' %}
+                            <form method="POST" action="{{ url_for('admin.approve_publication_route', publicacion_id=pub.id) }}" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-outline btn-sm">Aprobar</button>
+                            </form>
+                            {% endif %}
+                            {% if pub.estado == 'Activa' %}
+                            <form method="POST" action="{{ url_for('admin.reject_publication_route', publicacion_id=pub.id) }}" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-outline btn-sm">Ocultar</button>
+                            </form>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('admin.delete_publication_admin_route', publicacion_id=pub.id) }}" style="display:inline;"
+                                  data-confirm="¿Eliminar esta publicación permanentemente?" data-confirm-title="Eliminar publicación">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" style="text-align:center; color:#999; padding: 30px;">No se encontraron publicaciones.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if total_pages and total_pages > 1 %}
+        <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top: 20px; flex-wrap:wrap;">
+            {% set base_args = request.args.to_dict() %}
+            {% if page > 1 %}
+            <a href="{{ url_for('admin.publications_route', **dict(base_args, page=page-1)) }}" style="padding:8px 14px; border-radius:8px; background:#f0f0f0; text-decoration:none; color:#333;">‹ Anterior</a>
+            {% endif %}
+            <span style="padding:8px 14px; color:#666;">Página {{ page }} de {{ total_pages }} ({{ total_results }} publicaciones)</span>
+            {% if page < total_pages %}
+            <a href="{{ url_for('admin.publications_route', **dict(base_args, page=page+1)) }}" style="padding:8px 14px; border-radius:8px; background:var(--primary, #1A4D2E); text-decoration:none; color:#fff;">Siguiente ›</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

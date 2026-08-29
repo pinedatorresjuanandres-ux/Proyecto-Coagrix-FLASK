@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Mi Carrito - CoAgrix{% endblock %}
+{% block content %}
+<div class="container" style="padding: 40px 0;">
+    <h1 style="margin-top: 0;">Mi Carrito</h1>
+
+    {% if items %}
+        <div style="margin-top: 20px;">
+            {% for item in items %}
+            <div style="display: flex; justify-content: space-between; align-items: center;
+                        background: #f9f9f9; padding: 18px 20px; border-radius: 8px; margin-bottom: 10px;">
+                <div>
+                    <strong>{{ item.publication.titulo }}</strong>
+                    <p style="margin: 4px 0 0 0; color: #777; font-size: 0.9em;">
+                        {{ item.cantidad }} {{ item.publication.unidad_medida }} × {{ item.publication.precio|cop }}
+                    </p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <strong>{{ item.subtotal|cop }}</strong>
+                    <form method="POST" action="{{ url_for('cart.remove_route', publicacion_id=item.publication.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn-outline" style="padding: 6px 14px; font-size: 0.85em;">Quitar</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;
+                    background: #f0f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #2ecc71;">
+            <h3 style="margin: 0;">Total: {{ total|cop }}</h3>
+            <form method="POST" action="{{ url_for('cart.checkout_route') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn-primary" style="padding: 12px 30px;">Confirmar Pedido</button>
+            </form>
+        </div>
+    {% else %}
+        <div style="background: #f9f9f9; padding: 40px; border-radius: 8px; text-align: center; margin-top: 20px;">
+            <p style="color: #777; margin: 0;">Tu carrito está vacío.</p>
+            <p style="color: #777; margin: 8px 0 0 0;">
+                Ve al <a href="{{ url_for('product.catalog_route') }}" style="color: #2ecc71;">catálogo</a> y agrega productos.
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+<div class="cx-sidebar">
+    <div class="cx-sidebar-title">Administración</div>
+    <a href="{{ url_for('admin.dashboard_route') }}" class="{{ 'active' if active == 'dashboard' else '' }}">📊 Dashboard</a>
+    <a href="{{ url_for('admin.users_route') }}" class="{{ 'active' if active == 'users' else '' }}">👥 Usuarios</a>
+    <a href="{{ url_for('admin.publications_route') }}" class="{{ 'active' if active == 'publications' else '' }}">📢 Publicaciones</a>
+    <a href="{{ url_for('product.catalog_route') }}">🛒 Catálogo</a>
+    <a href="{{ url_for('message.inbox_route') }}">💬 Mensajes</a>
+</div>

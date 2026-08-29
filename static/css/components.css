@@ -1,0 +1,245 @@
+/* ============================================================
+   CoAgrix — components.css
+   Estilos para los componentes reutilizables añadidos en
+   templates/components/. Usa las variables ya definidas en
+   theme.css (--cx-green, --cx-radius, --cx-shadow, etc.) para
+   no romper la identidad visual existente.
+   ============================================================ */
+
+/* ---------- Toasts (reemplazan las alertas planas de Flask) ---------- */
+.cx-toast-container {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 360px;
+  width: calc(100% - 40px);
+}
+
+.cx-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--cx-white, #fff);
+  border-left: 4px solid var(--cx-green, #2E7D32);
+  border-radius: var(--cx-radius-sm, 8px);
+  box-shadow: var(--cx-shadow-hover, 0 8px 24px rgba(0, 0, 0, 0.16));
+  padding: 14px 16px;
+  animation: cx-toast-in 0.25s ease;
+}
+
+.cx-toast.cx-toast-leaving {
+  animation: cx-toast-out 0.2s ease forwards;
+}
+
+.cx-toast-success { border-left-color: #2E7D32; }
+.cx-toast-error   { border-left-color: #C62828; }
+.cx-toast-info    { border-left-color: #1565C0; }
+.cx-toast-warning { border-left-color: #E67E22; }
+
+.cx-toast-icon { font-size: 1.2em; line-height: 1; }
+.cx-toast-body { flex: 1; font-size: 0.92em; color: #333; }
+.cx-toast-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  font-size: 1em;
+  line-height: 1;
+  padding: 0;
+}
+.cx-toast-close:hover { color: #333; }
+
+@keyframes cx-toast-in {
+  from { transform: translateX(30px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes cx-toast-out {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(30px); opacity: 0; }
+}
+
+/* ---------- Modal de confirmación genérico ---------- */
+.cx-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 20, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+}
+.cx-modal-overlay.cx-modal-open {
+  display: flex;
+  animation: cx-fade-in 0.15s ease;
+}
+.cx-modal-box {
+  background: var(--cx-white, #fff);
+  border-radius: var(--cx-radius, 12px);
+  padding: 28px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: var(--cx-shadow-hover, 0 8px 24px rgba(0, 0, 0, 0.2));
+  animation: cx-pop-in 0.18s ease;
+}
+.cx-modal-icon { font-size: 2em; margin-bottom: 10px; }
+.cx-modal-title { margin: 0 0 8px 0; font-size: 1.2em; color: var(--cx-gray-dark, #222); }
+.cx-modal-message { color: #666; margin: 0 0 22px 0; font-size: 0.95em; }
+.cx-modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+
+@keyframes cx-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cx-pop-in {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- Estrellas de calificación ---------- */
+.cx-stars { color: #ddd; font-size: 1em; letter-spacing: 1px; white-space: nowrap; }
+.cx-stars .cx-star-filled { color: #FFC107; }
+.cx-rating-count { color: #999; font-size: 0.85em; margin-left: 6px; }
+
+/* ---------- Tarjeta de producto reutilizable ---------- */
+.cx-product-card {
+  position: relative;
+  cursor: pointer;
+  transition: var(--cx-transition, all 0.2s ease);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  background: var(--cx-white, #fff);
+  border-radius: var(--cx-radius, 12px);
+  box-shadow: var(--cx-shadow, 0 2px 10px rgba(0,0,0,0.06));
+}
+.cx-product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--cx-shadow-hover, 0 8px 24px rgba(46, 125, 50, 0.16));
+}
+.cx-product-image-wrap { position: relative; }
+.cx-product-image {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cx-product-body { padding: 20px; }
+.cx-badge-cat {
+  display: inline-block;
+  background: #E8F5E9;
+  color: #2E7D32;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+.cx-badge-transporte {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin: 8px 0;
+}
+.cx-badge-transporte.si { background: #E3F2FD; color: #1565C0; }
+.cx-badge-transporte.no { background: #FBE9E7; color: #BF360C; }
+.cx-product-seller {
+  font-size: 0.85em;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+/* Botón de favorito flotante, dinámico vía AJAX (favorite-toggle.js) */
+.cx-fav-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--cx-shadow, 0 2px 10px rgba(0,0,0,0.1));
+  font-size: 1.15em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #ccc;
+  transition: var(--cx-transition, all 0.2s ease);
+}
+.cx-fav-btn:hover { transform: scale(1.1); }
+.cx-fav-btn.cx-fav-active { color: #e74c3c; }
+.cx-fav-btn.cx-fav-pending { opacity: 0.6; cursor: wait; }
+.cx-fav-btn.cx-fav-pop { animation: cx-fav-pop 0.35s ease; }
+
+@keyframes cx-fav-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Paginación reutilizable ---------- */
+.cx-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+.cx-page-link {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #f0f0f0;
+  text-decoration: none;
+  color: #333;
+  font-size: 0.92em;
+  transition: var(--cx-transition, all 0.2s ease);
+}
+.cx-page-link:hover { background: #e2e2e2; }
+.cx-page-link.cx-page-active {
+  background: var(--cx-green, #1A4D2E);
+  color: #fff;
+}
+.cx-page-info { padding: 8px 14px; color: #666; font-size: 0.9em; }
+
+/* ---------- Estado vacío reutilizable ---------- */
+.cx-empty-state {
+  background: #f9f9f9;
+  padding: 48px 30px;
+  border-radius: var(--cx-radius, 12px);
+  text-align: center;
+  margin-top: 20px;
+}
+.cx-empty-icon { font-size: 2.6em; margin-bottom: 10px; }
+.cx-empty-title { margin: 0 0 6px 0; color: #444; font-size: 1.15em; }
+.cx-empty-text { color: #777; margin: 0; }
+.cx-empty-cta { margin-top: 16px; display: inline-block; }
+
+/* ---------- Skeleton / loading dinámico ---------- */
+.cx-skeleton {
+  background: linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%);
+  background-size: 400% 100%;
+  animation: cx-skeleton-loading 1.4s ease infinite;
+  border-radius: var(--cx-radius-sm, 8px);
+}
+@keyframes cx-skeleton-loading {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* ---------- Contador animado en stat cards ---------- */
+.cx-stat-value[data-cx-count] { transition: var(--cx-transition, all 0.2s ease); }
+
+@media (max-width: 640px) {
+  .cx-toast-container { right: 10px; left: 10px; max-width: none; }
+}

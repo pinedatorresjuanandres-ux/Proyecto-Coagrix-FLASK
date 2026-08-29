@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Mensajes - CoAgrix{% endblock %}
+{% block content %}
+<div class="container" style="padding: 40px 0; max-width: 700px;">
+    <h1 style="margin-top: 0;">Mis Mensajes</h1>
+
+    {% if conversations %}
+        <div class="cx-card" style="padding: 8px;">
+            {% for c in conversations %}
+            <a href="{{ url_for('message.conversation_route', otro_usuario_id=c.otro_usuario_id) }}"
+               style="text-decoration: none; color: inherit;">
+                <div style="display: flex; align-items: center; gap: 14px; padding: 14px 12px; border-radius: var(--cx-radius-sm); transition: var(--cx-transition);"
+                     onmouseover="this.style.background='var(--cx-gray-light)'" onmouseout="this.style.background='transparent'">
+                    <span class="cx-avatar" style="width: 46px; height: 46px; font-size: 1.1em;">{{ c.nombre[0]|upper }}</span>
+                    <div style="flex: 1;">
+                        <strong>{{ c.nombre }}</strong>
+                        <p style="margin: 2px 0 0 0; color: #777; font-size: 0.88em;">{{ c.email }}</p>
+                    </div>
+                    <span style="color: var(--cx-green); font-size: 1.3em;">›</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="cx-card" style="text-align: center;">
+            <p style="color: #777; margin: 0;">Todavía no tienes conversaciones.</p>
+            <p style="color: #777; margin: 8px 0 0 0;">
+                Ve al <a href="{{ url_for('product.catalog_route') }}" style="color: var(--cx-green);">catálogo</a>
+                y contacta a un productor desde la ficha de su producto.
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

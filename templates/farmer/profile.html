@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil - CoAgrix{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 0; max-width: 600px;">
+    <div class="section-header">
+        <h2>Mi Perfil</h2>
+        <p>Gestiona tu información personal y ubicación.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" style="padding: 15px; border-radius: 8px; margin-bottom: 10px; background-color: {% if category == 'error' %}#ffdddd{% else %}#ddffdd{% endif %};">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('farmer.profile') }}" class="feature-card glass" style="padding: 30px;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Nombre Completo</label>
+            <input type="text" value="{{ farmer.nombre }}" disabled style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Teléfono</label>
+            <input type="tel" name="telefono" value="{{ farmer.telefono or '' }}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Departamento</label>
+            <input type="text" value="{{ farmer.departamento or 'No especificado' }}" disabled style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Municipio</label>
+            <input type="text" value="{{ farmer.municipio or 'No especificado' }}" disabled style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Descripción</label>
+            <textarea name="descripcion" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; min-height: 100px;">{{ farmer.descripcion or '' }}</textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn-primary">Guardar Cambios</button>
+            <a href="{{ url_for('farmer.dashboard') }}" class="btn-outline" style="text-decoration: none; display: inline-block; text-align: center;">Volver</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

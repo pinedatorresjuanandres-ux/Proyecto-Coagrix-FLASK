@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+venv/
+.venv/
+env/
+
+# Flask / sesiones
+.flask_session_data/
+instance/
+
+# Variables de entorno / secretos
+.env
+.env.*
+!.env.example
+
+# Uploads de usuarios (no versionar contenido subido)
+static/uploads/*
+!static/uploads/.gitkeep
+
+# Tests / cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor / SO
+.vscode/
+.idea/
+*.swp
+.DS_Store

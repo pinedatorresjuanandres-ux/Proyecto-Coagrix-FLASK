@@ -1,0 +1,28 @@
+.campo-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.campo-checkbox input[type="checkbox"] {
+    margin-top: 4px;
+    width: auto;
+    cursor: pointer;
+}
+
+.campo-checkbox label {
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.campo-checkbox a {
+    color: #22c55e;
+    text-decoration: underline;
+}
+
+button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
