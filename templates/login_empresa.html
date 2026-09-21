@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoAgrix - Login Empresa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login_empresa.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/toggle-password.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="panel-info">
+            <div class="wave-top"></div>
+            <div class="info-content">
+                <p class="welcome-text">Bienvenido a</p>
+                <div class="logo-circle"><span class="logo-icon">🏢</span></div>
+                <h1 class="brand-name">CoAgrix</h1>
+                <p class="info-description">Soluciones corporativas para el abastecimiento agrícola.</p>
+            </div>
+            <div class="info-footer"><span>CREADO POR COAGRIX</span><span class="divider">|</span><span>DISEÑO 2026</span></div>
+            <div class="wave-bottom"></div>
+        </div>
+        <div class="panel-form">
+            <div class="form-content">
+                <h2 class="form-title">Inicia Sesión</h2>
+                <p class="form-subtitle">Ingresa como Empresa</p>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category }}" style="color: red; margin-bottom: 10px;">{{ message }}</div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+                <form action="{{ url_for('auth.login_company') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="input-group"><label>Correo Electrónico</label><input type="email" name="email" placeholder="Ingresa tu correo" required></div>
+                    <div class="input-group"><label>Contraseña</label><input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required><span class="toggle-password" style="right: 10px; bottom: 12px;" onclick="togglePassword('password', this)">👁️</span></div>
+                <div class="extra">
+                    <a href="{{ url_for('auth.forgot_password_page') }}">¿Olvidaste tu contraseña?</a>
+                </div>
+                    <div class="botones">
+                        <button type="submit" class="btn-primary">Iniciar Sesión</button>
+                        <a href="{{ url_for('auth.register_company') }}" class="btn-secondary">Regístrate</a>
+                    </div>
+                </form>
+                <div class="volver"><a href="{{ url_for('index') }}">← Volver al inicio</a></div>
+            </div>
+        </div>
+    </div>
+<script src="{{ url_for('static', filename='js/toggle-password.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Comparar Precios - CoAgrix{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 0;">
+    <div class="section-header">
+        <h2>Comparar Precios</h2>
+        <p>Analiza los precios actuales entre vendedores y cómo ha evolucionado el precio de un producto en el tiempo.</p>
+    </div>
+
+    <!-- Comparación de precios actuales -->
+    <div style="margin-top: 30px;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: #f0f0f0; border-bottom: 2px solid #2ecc71;">
+                    <th style="padding: 15px; text-align: left;">Producto</th>
+                    <th style="padding: 15px; text-align: center;">Precio Mínimo</th>
+                    <th style="padding: 15px; text-align: center;">Precio Máximo</th>
+                    <th style="padding: 15px; text-align: center;">Diferencia</th>
+                    <th style="padding: 15px; text-align: center;">Vendedores</th>
+                    <th style="padding: 15px; text-align: center;">Historial</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in price_comparison %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 15px;"><strong>{{ item.nombre }}</strong></td>
+                    <td style="padding: 15px; text-align: center; color: #27ae60;">{{ item.precio_min|cop }}</td>
+                    <td style="padding: 15px; text-align: center; color: #e74c3c;">{{ item.precio_max|cop }}</td>
+                    <td style="padding: 15px; text-align: center;">{{ (item.precio_max - item.precio_min)|cop }}</td>
+                    <td style="padding: 15px; text-align: center;">{{ item.num_vendedores }}</td>
+                    <td style="padding: 15px; text-align: center;">
+                        <a href="{{ url_for('merchant.compare_route', producto_id=item.producto_id) }}"
+                           class="btn-outline" style="padding: 6px 14px; font-size: 0.85em; text-decoration: none;">
+                            Ver evolución
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="padding: 20px; text-align: center; color: #999;">No hay productos disponibles para comparar.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Selector rápido de producto -->
+    <div style="margin-top: 40px;">
+        <h3>Historial de precios por producto</h3>
+        <form method="GET" style="display: flex; gap: 10px; margin-top: 10px;">
+            <select name="producto_id" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                <option value="">-- Selecciona un producto --</option>
+                {% for p in productos %}
+                <option value="{{ p.id }}" {% if producto_id == p.id %}selected{% endif %}>{{ p.nombre }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn-primary">Ver historial</button>
+        </form>
+    </div>
+
+    {% if producto_id %}
+        <div style="margin-top: 30px;">
+            {% if historial %}
+                <h4>Evolución del precio de "{{ producto_seleccionado.nombre if producto_seleccionado else '' }}"</h4>
+
+                <canvas id="priceChart" style="max-width: 100%; margin: 20px 0; background: #fff; border-radius: 8px;"></canvas>
+
+                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <thead>
+                        <tr style="background-color: #f0f0f0; border-bottom: 2px solid #2ecc71;">
+                            <th style="padding: 12px; text-align: left;">Fecha</th>
+                            <th style="padding: 12px; text-align: left;">Vendedor</th>
+                            <th style="padding: 12px; text-align: left;">Publicación</th>
+                            <th style="padding: 12px; text-align: center;">Precio Anterior</th>
+                            <th style="padding: 12px; text-align: center;">Precio Nuevo</th>
+                            <th style="padding: 12px; text-align: center;">Cambio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for h in historial %}
+                        {% set diferencia = h.precio_nuevo - h.precio_anterior %}
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 12px;">{{ h.fecha_cambio }}</td>
+                            <td style="padding: 12px;">{{ h.campesino_nombre }}</td>
+                            <td style="padding: 12px;">{{ h.titulo }}</td>
+                            <td style="padding: 12px; text-align: center;">{{ h.precio_anterior|cop }}</td>
+                            <td style="padding: 12px; text-align: center;"><strong>{{ h.precio_nuevo|cop }}</strong></td>
+                            <td style="padding: 12px; text-align: center; color: {{ '#e74c3c' if diferencia > 0 else ('#27ae60' if diferencia < 0 else '#999') }};">
+                                {% if diferencia > 0 %}▲{% elif diferencia < 0 %}▼{% else %}—{% endif %}
+                                {{ diferencia|abs|cop if diferencia != 0 else '' }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+                <script>
+                    const ctx = document.getElementById('priceChart');
+                    const historial = {{ historial|tojson }};
+
+                    // Agrupa los puntos por vendedor para dibujar una línea por cada uno
+                    const porVendedor = {};
+                    historial.forEach(h => {
+                        const key = h.campesino_nombre;
+                        if (!porVendedor[key]) porVendedor[key] = [];
+                        porVendedor[key].push({ x: h.fecha_cambio, y: parseFloat(h.precio_nuevo) });
+                    });
+
+                    const colores = ['#2ecc71', '#e74c3c', '#3498db', '#f39c12', '#9b59b6', '#1abc9c'];
+                    const datasets = Object.keys(porVendedor).map((vendedor, i) => ({
+                        label: vendedor,
+                        data: porVendedor[vendedor],
+                        borderColor: colores[i % colores.length],
+                        backgroundColor: colores[i % colores.length],
+                        tension: 0.2,
+                        fill: false
+                    }));
+
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: { datasets: datasets },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: { type: 'category', title: { display: true, text: 'Fecha' } },
+                                y: { title: { display: true, text: 'Precio (COP)' }, beginAtZero: false }
+                            },
+                            plugins: { legend: { position: 'bottom' } }
+                        }
+                    });
+                </script>
+            {% else %}
+                <p style="color: #999;">Este producto todavía no tiene cambios de precio registrados.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div style="background: #f0f9ff; padding: 20px; border-radius: 8px; margin-top: 30px; border-left: 4px solid #2ecc71;">
+        <h4 style="margin-top: 0;">Consejo</h4>
+        <p>Usa el historial de precios para detectar tendencias: si un producto sube de precio con frecuencia en temporada, negocia con anticipación o busca proveedores alternativos.</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Productos - CoAgrix{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mis_publicaciones.css') }}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <header>
+    <h1>🌱 Mis Productos</h1>
+    <a href="{{ url_for('farmer.create_publication_route') }}" class="btnNueva">
+      <i class="fa-solid fa-plus"></i> Agregar Producto
+    </a>
+  </header>
+
+  <div class="busqueda">
+    <input type="text" id="buscarInput" placeholder="Buscar en mis productos..." />
+    <select id="filtroCategoria">
+      <option value="">Todas las categorías</option>
+      {% for cat_nombre in (publications | map(attribute='categoria_nombre') | unique | list) %}
+      <option value="{{ cat_nombre }}">{{ cat_nombre }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <section class="productos" id="listaProductos">
+    {% for pub in publications %}
+    <div class="card producto-item" data-nombre="{{ pub.producto_nombre|lower }} {{ pub.titulo|lower }}" data-categoria="{{ pub.categoria_nombre }}">
+      <img src="{{ product_image_url(pub.imagen) }}" alt="{{ pub.producto_nombre }}">
+      <div class="contenido">
+        <span class="badge-categoria">{{ pub.categoria_nombre }}</span>
+        <h2>{{ pub.producto_nombre }}</h2>
+        <p>{{ pub.precio|cop }} <span style="color:#777; font-weight:normal;">/ {{ pub.unidad_medida }}</span></p>
+        <span>Cantidad: {{ pub.cantidad_disponible }} {{ pub.unidad_medida }}</span><br>
+        <span class="badge-transporte {% if pub.transporte %}si{% else %}no{% endif %}">
+          {% if pub.transporte %}🚚 Transporte Disponible{% else %}❌ Sin Transporte{% endif %}
+        </span><br>
+        <span>Estado: {{ pub.estado }}</span>
+
+        <div class="acciones">
+          <a href="{{ url_for('product.detail', publicacion_id=pub.id) }}" class="ver" style="text-decoration:none; display:flex; align-items:center; justify-content:center;" title="Ver en catálogo">
+            <i class="fa-solid fa-eye"></i>
+          </a>
+          <a href="{{ url_for('farmer.edit_publication_route', publicacion_id=pub.id) }}" class="editar" style="text-decoration:none; display:flex; align-items:center; justify-content:center;" title="Editar">
+            <i class="fa-solid fa-pen"></i>
+          </a>
+          <form action="{{ url_for('farmer.delete_publication_route', publicacion_id=pub.id) }}" method="POST"
+                data-confirm="¿Seguro que deseas eliminar este producto? Esta acción no se puede deshacer." data-confirm-title="Eliminar producto" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="eliminar" title="Eliminar">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <p>No tienes productos publicados todavía. ¡Agrega tu primer producto!</p>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const buscarInput = document.getElementById('buscarInput');
+  const filtroCategoria = document.getElementById('filtroCategoria');
+  const items = document.querySelectorAll('.producto-item');
+
+  function aplicarFiltros() {
+    const texto = (buscarInput.value || '').toLowerCase();
+    const categoria = filtroCategoria.value;
+    items.forEach(item => {
+      const coincideTexto = item.dataset.nombre.includes(texto);
+      const coincideCategoria = !categoria || item.dataset.categoria === categoria;
+      item.style.display = (coincideTexto && coincideCategoria) ? '' : 'none';
+    });
+  }
+
+  buscarInput.addEventListener('input', aplicarFiltros);
+  filtroCategoria.addEventListener('change', aplicarFiltros);
+</script>
+{% endblock %}

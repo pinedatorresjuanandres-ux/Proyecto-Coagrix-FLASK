@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Detalle del Pedido #{{ order.id }} - CoAgrix{% endblock %}
+{% block content %}
+{% from 'components/badges.html' import estado_pedido %}
+<div class="container" style="padding: 40px 0; max-width: 700px;">
+    <a href="{{ url_for('farmer.orders_route') }}" style="color: #2ecc71; text-decoration: none;">← Pedidos recibidos</a>
+    <h1 style="margin: 15px 0;">Pedido #{{ order.id }} <span style="font-size: 0.5em; vertical-align: middle; margin-left: 8px;">{{ estado_pedido(order.estado) }}</span></h1>
+
+    {% if details %}
+    <div class="cx-table-wrap"><table class="cx-table">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th class="t-center">Cantidad</th>
+                <th class="t-center">Precio Unitario</th>
+                <th class="t-center">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in details %}
+            <tr>
+                <td>{{ d.titulo }}</td>
+                <td class="t-center">{{ d.cantidad }} {{ d.unidad_medida }}</td>
+                <td class="t-center">{{ d.precio_unitario|cop }}</td>
+                <td class="t-center">{{ ((d.cantidad|float) * (d.precio_unitario|float))|cop }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table></div>
+    {% else %}
+    <p style="color: #999;">No se encontraron detalles para este pedido.</p>
+    {% endif %}
+</div>
+{% endblock %}

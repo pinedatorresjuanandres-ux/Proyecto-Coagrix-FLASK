@@ -1,0 +1,23 @@
+{# ============================================================
+   Paginación reutilizable.
+   Uso:
+     {% from 'components/pagination.html' import render_pagination %}
+     {{ render_pagination(page, total_pages, total_results, 'product.catalog_route') }}
+
+   `endpoint` es el nombre del endpoint de Flask hacia el que se pagina.
+   Conserva automáticamente los demás query params (filtros, búsqueda).
+   ============================================================ #}
+{% macro render_pagination(page, total_pages, total_results, endpoint) %}
+{% if total_pages and total_pages > 1 %}
+{% set base_args = request.args.to_dict() %}
+<div class="cx-pagination">
+    {% if page > 1 %}
+    <a href="{{ url_for(endpoint, **dict(base_args, page=page-1)) }}" class="cx-page-link">‹ Anterior</a>
+    {% endif %}
+    <span class="cx-page-info">Página {{ page }} de {{ total_pages }}{% if total_results is not none %} ({{ total_results }} resultados){% endif %}</span>
+    {% if page < total_pages %}
+    <a href="{{ url_for(endpoint, **dict(base_args, page=page+1)) }}" class="cx-page-link cx-page-active">Siguiente ›</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endmacro %}

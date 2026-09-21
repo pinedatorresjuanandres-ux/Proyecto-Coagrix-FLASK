@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Productos - CoAgrix{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mis_publicaciones.css') }}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <header>
+    <h1>🌱 Mis Productos</h1>
+    <a href="{{ url_for('farmer.create_publication_route') }}" class="btnNueva">
+      <i class="fa-solid fa-plus"></i> Agregar Producto
+    </a>
+  </header>
+
+  <form method="GET" class="busqueda auto-filter-form">
+    <input type="search" name="buscar" placeholder="Buscar en mis productos..." value="{{ filters.get('buscar', '') }}" />
+    <select name="categoria">
+      <option value="">Todas las categorías</option>
+      {% for cat in categories %}
+      <option value="{{ cat.id }}" {% if filters.get('categoria')|string == cat.id|string %}selected{% endif %}>{{ cat.nombre }}</option>
+      {% endfor %}
+    </select>
+    <select name="estado">
+      <option value="">Todos los estados</option>
+      {% for estado in ('Activa', 'Inactiva', 'Agotada') %}
+      <option value="{{ estado }}" {% if filters.get('estado') == estado %}selected{% endif %}>{{ estado }}</option>
+      {% endfor %}
+    </select>
+    {% if filters %}<a href="{{ url_for('farmer.publications') }}" class="btn-outline">Limpiar</a>{% endif %}
+  </form>
+
+  <section class="productos" id="listaProductos">
+    {% for pub in publications %}
+    <div class="card producto-item" data-nombre="{{ pub.producto_nombre|lower }} {{ pub.titulo|lower }}" data-categoria="{{ pub.categoria_nombre }}">
+      <img src="{{ product_image_url(pub.imagen) }}" alt="{{ pub.producto_nombre }}">
+      <div class="contenido">
+        <span class="badge-categoria">{{ pub.categoria_nombre }}</span>
+        <h2>{{ pub.producto_nombre }}</h2>
+        <p>Empresa: {{ pub.precio_empresa|cop }} <span style="color:#777; font-weight:normal;">/ {{ pub.unidad_medida }}</span></p>
+        <p>Comerciante: {{ pub.precio_comerciante|cop }} <span style="color:#777; font-weight:normal;">/ {{ pub.unidad_medida }}</span></p>
+        <span>Cantidad: {{ pub.cantidad_disponible }} {{ pub.unidad_medida }}</span><br>
+        <span class="badge-transporte {% if pub.transporte %}si{% else %}no{% endif %}">
+          {% if pub.transporte %}🚚 Transporte Disponible{% else %}❌ Sin Transporte{% endif %}
+        </span><br>
+        <span>Estado: {{ pub.estado }}</span>
+
+        <div class="acciones">
+          <a href="{{ url_for('product.detail', publicacion_id=pub.id) }}" class="ver" style="text-decoration:none; display:flex; align-items:center; justify-content:center;" title="Ver en catálogo">
+            <i class="fa-solid fa-eye"></i>
+          </a>
+          <a href="{{ url_for('farmer.edit_publication_route', publicacion_id=pub.id) }}" class="editar" style="text-decoration:none; display:flex; align-items:center; justify-content:center;" title="Editar">
+            <i class="fa-solid fa-pen"></i>
+          </a>
+          <form action="{{ url_for('farmer.delete_publication_route', publicacion_id=pub.id) }}" method="POST"
+                onsubmit="return confirm('¿Seguro que deseas eliminar este producto? Esta acción no se puede deshacer.');" style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="eliminar" title="Eliminar">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <p>No tienes productos publicados todavía. ¡Agrega tu primer producto!</p>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

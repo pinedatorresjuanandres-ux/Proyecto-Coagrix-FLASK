@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Mis Pedidos - CoAgrix{% endblock %}
+{% block content %}
+{% from 'components/badges.html' import estado_pedido %}
+<div class="container" style="padding: 40px 0;">
+    <h1 style="margin-top: 0;">Mis Pedidos</h1>
+
+    <form method="GET" class="auto-filter-form" style="display:flex; gap:10px; flex-wrap:wrap; margin:20px 0;">
+        <select name="estado" class="cx-select">
+            <option value="">Todos los estados</option>
+            {% for estado in ('Pendiente', 'Aceptado', 'Rechazado', 'Completado', 'Cancelado') %}
+            <option value="{{ estado }}" {% if filters.get('estado') == estado %}selected{% endif %}>{{ estado }}</option>
+            {% endfor %}
+        </select>
+        {% if filters %}<a href="{{ url_for('cart.orders_route') }}" class="btn-outline">Limpiar</a>{% endif %}
+    </form>
+
+    {% if orders %}
+    <div class="cx-table-wrap"><table class="cx-table">
+        <thead>
+            <tr>
+                <th>Pedido</th>
+                <th>Fecha</th>
+                <th>Productos</th>
+                <th class="t-center">Total</th>
+                <th class="t-center">Estado</th>
+                <th class="t-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in orders %}
+            <tr>
+                <td><a href="{{ url_for('cart.order_detail_route', pedido_id=o.id) }}">#{{ o.id }}</a></td>
+                <td class="nowrap">{{ o.fecha_pedido }}</td>
+                <td>
+                    {% if o.productos_detalle %}
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        {% for item in o.productos_detalle %}
+                        <div style="font-size:0.85em;">
+                            {{ item.titulo }}
+                            <span style="color:#999;">× {{ item.cantidad }} {{ item.unidad_medida }} ({{ item.precio_unitario|cop }} c/u)</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    Sin productos
+                    {% endif %}
+                </td>
+                <td class="t-center">{{ o.total|cop if o.total else '-' }}</td>
+                <td class="t-center">
+                    {{ estado_pedido(o.estado) }}
+                </td>
+                <td class="t-center">
+                    {% if o.estado in ('Pendiente', 'Aceptado') %}
+                    <form method="POST" action="{{ url_for('cart.cancel_route', pedido_id=o.id) }}" style="display:inline;"
+                          onsubmit="return confirm('¿Cancelar el pedido #{{ o.id }}? Los productos volverán a estar disponibles.');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn-outline" style="padding: 6px 12px; font-size: 0.85em;">Cancelar pedido</button>
+                    </form>
+                    {% else %}
+                    <span style="color: #999;">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table></div>
+    {% else %}
+    <div style="background: #f9f9f9; padding: 40px; border-radius: 8px; text-align: center; margin-top: 20px;">
+        <p style="color: #777; margin: 0;">Todavía no has hecho ningún pedido.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

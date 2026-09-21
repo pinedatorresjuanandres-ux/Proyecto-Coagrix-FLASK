@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Mi Perfil - CoAgrix{% endblock %}
+{% block content %}
+<div class="container" style="padding: 40px 0; max-width: 600px;">
+    <div class="section-header">
+        <h2>Mi Perfil</h2>
+        <p>Gestiona la información de tu empresa.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('company.profile_route') }}" class="feature-card glass" style="padding: 30px;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Nombre / Razón Social</label>
+            <input type="text" value="{{ company.nombre }}" disabled style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Correo</label>
+            <input type="email" value="{{ company.email }}" disabled style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">NIT</label>
+            <input type="text" name="nit" value="{{ company.nit or '' }}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Teléfono</label>
+            <input type="tel" name="telefono" value="{{ company.telefono or '' }}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Sector</label>
+            <input type="text" name="sector" value="{{ company.sector or '' }}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">Ubicación</label>
+            <input type="text" value="{{ (company.departamento + ', ' + company.municipio) if company.departamento else 'No especificado' }}" disabled style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn-primary">Guardar Cambios</button>
+            <a href="{{ url_for('company.dashboard_route') }}" class="btn-outline" style="text-decoration: none; display: inline-block; text-align: center;">Volver</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

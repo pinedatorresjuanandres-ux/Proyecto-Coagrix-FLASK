@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Buscar Productos - CoAgrix{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 0;">
+    <div class="section-header">
+        <span class="section-tag">Panel Empresarial</span>
+        <h2>Buscar Productos</h2>
+        <p>Explora y filtra los productos disponibles de nuestros agricultores.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 250px 1fr; gap: 30px; margin-top: 30px;">
+        <!-- Filtros -->
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; height: fit-content;">
+            <h4 style="margin-top: 0;">Filtros</h4>
+            <form method="GET" action="{{ url_for('company.search_route') }}" class="auto-filter-form">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 8px;">Buscar</label>
+                    <input name="buscar" value="{{ filters.get('buscar', '') }}" placeholder="Producto o publicación" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 8px;">Categoría</label>
+                    <select name="categoria" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="">Todas</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if filters.get('categoria')|string == cat.id|string %}selected{% endif %}>{{ cat.nombre }}</option>
+                    {% endfor %}
+                </select>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; font-weight:bold; margin-bottom:8px;">Ubicación</label>
+                    <select name="municipio" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                        <option value="">Todas</option>
+                        {% for mun in municipios %}<option value="{{ mun.municipio }}" {% if filters.get('municipio') == mun.municipio %}selected{% endif %}>{{ mun.municipio }}</option>{% endfor %}
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; font-weight:bold; margin-bottom:8px;">Rango de precio (COP)</label>
+                    <div style="display:flex; gap:6px;"><input type="number" min="0" name="precio_min" value="{{ filters.get('precio_min', '') }}" placeholder="Mín"><input type="number" min="0" name="precio_max" value="{{ filters.get('precio_max', '') }}" placeholder="Máx"></div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label><input type="checkbox" name="transporte" value="1" {% if filters.get('transporte') %}checked{% endif %}> Solo con transporte</label>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; font-weight:bold; margin-bottom:8px;">Orden</label>
+                    <select name="orden" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                        <option value="recientes">Más recientes</option><option value="precio_asc" {% if filters.get('orden') == 'precio_asc' %}selected{% endif %}>Menor precio</option><option value="precio_desc" {% if filters.get('orden') == 'precio_desc' %}selected{% endif %}>Mayor precio</option>
+                    </select>
+                </div>
+
+                {% if filters %}<a href="{{ url_for('company.search_route') }}" class="btn-outline" style="display:block; text-align:center; margin-top:8px;">Limpiar</a>{% endif %}
+            </form>
+        </div>
+
+        <!-- Productos -->
+        <div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                {% for pub in publications %}
+                <div class="feature-card glass" style="cursor: pointer; transition: transform 0.3s;">
+                    <div style="height: 200px; background-color: #eee; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                        <i class="fa-solid fa-image" style="font-size: 48px; color: #ccc;"></i>
+                    </div>
+                    <div style="padding: 20px;">
+                        <h4 style="margin: 0 0 10px 0;">{{ pub.titulo }}</h4>
+                        <p style="color: #666; font-size: 0.9em; margin: 0 0 10px 0;">{{ pub.producto_nombre }}</p>
+                        <p style="font-weight: bold; color: #2ecc71; font-size: 1.2em; margin: 0 0 10px 0;">{{ pub.precio_empresa|cop }} / {{ pub.unidad_medida }}</p>
+                        <p style="color: #999; font-size: 0.85em; margin: 0 0 15px 0;">{{ pub.departamento }}, {{ pub.municipio }}</p>
+                        <a href="{{ url_for('product.detail', publicacion_id=pub.id) }}" class="btn-primary" style="display: inline-block; text-decoration: none;">Ver Detalles</a>
+                    </div>
+                </div>
+                {% else %}
+                <p>No hay productos disponibles con los filtros seleccionados.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

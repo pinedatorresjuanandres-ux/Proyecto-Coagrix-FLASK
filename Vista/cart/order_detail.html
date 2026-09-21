@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Detalle del Pedido #{{ pedido_id }} - CoAgrix{% endblock %}
+{% block content %}
+{% from 'components/badges.html' import estado_pedido %}
+<div class="container" style="padding: 40px 0; max-width: 700px;">
+    <a href="{{ url_for('cart.orders_route') }}" style="color: #2ecc71; text-decoration: none;">← Mis pedidos</a>
+    <h1 style="margin: 15px 0;">Pedido #{{ pedido_id }} <span style="font-size: 0.5em; vertical-align: middle; margin-left: 8px;">{{ estado_pedido(order.estado) }}</span></h1>
+
+    {% if order.estado in ('Pendiente', 'Aceptado') %}
+    <form method="POST" action="{{ url_for('cart.cancel_route', pedido_id=pedido_id) }}"
+          onsubmit="return confirm('¿Cancelar el pedido #{{ pedido_id }}? Los productos volverán a estar disponibles.');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn-outline" style="padding: 8px 16px;">Cancelar pedido</button>
+    </form>
+    {% endif %}
+
+    {% if details %}
+    <div class="cx-table-wrap"><table class="cx-table">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Vendedor</th>
+                <th class="t-center">Cantidad</th>
+                <th class="t-center">Precio Unitario</th>
+                <th class="t-center">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in details %}
+            <tr>
+                <td>{{ d.titulo }}</td>
+                <td>{{ d.campesino_nombre }}</td>
+                <td class="t-center">{{ d.cantidad }} {{ d.unidad_medida }}</td>
+                <td class="t-center">{{ d.precio_unitario|cop }}</td>
+                <td class="t-center">{{ ((d.cantidad|float) * (d.precio_unitario|float))|cop }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table></div>
+    {% else %}
+    <p style="color: #999;">No se encontraron detalles para este pedido.</p>
+    {% endif %}
+</div>
+{% endblock %}

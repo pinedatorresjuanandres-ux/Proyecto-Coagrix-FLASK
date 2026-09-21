@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Detalle del Pedido #{{ order.id }} - CoAgrix{% endblock %}
+{% block content %}
+<div class="container" style="padding: 40px 0; max-width: 700px;">
+    <a href="{{ url_for('farmer.orders_route') }}" style="color: #2ecc71; text-decoration: none;">← Pedidos recibidos</a>
+    <h1 style="margin: 15px 0;">Pedido #{{ order.id }} <span style="font-size:0.6em; color:#999;">({{ order.estado }})</span></h1>
+
+    {% if details %}
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #f0f0f0; border-bottom: 2px solid #2ecc71;">
+                <th style="padding: 12px; text-align: left;">Producto</th>
+                <th style="padding: 12px; text-align: center;">Cantidad</th>
+                <th style="padding: 12px; text-align: center;">Precio Unitario</th>
+                <th style="padding: 12px; text-align: center;">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in details %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 12px;">{{ d.titulo }}</td>
+                <td style="padding: 12px; text-align: center;">{{ d.cantidad }} {{ d.unidad_medida }}</td>
+                <td style="padding: 12px; text-align: center;">{{ d.precio_unitario|cop }}</td>
+                <td style="padding: 12px; text-align: center;">{{ (d.cantidad * d.precio_unitario)|cop }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color: #999;">No se encontraron detalles para este pedido.</p>
+    {% endif %}
+</div>
+{% endblock %}

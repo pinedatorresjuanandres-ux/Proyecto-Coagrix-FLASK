@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Comentarios de la Página de Inicio - CoAgrix{% endblock %}
+{% block content %}
+<div class="cx-admin-layout">
+    {% set active = 'comments' %}
+    {% include 'admin/_sidebar.html' %}
+
+    <div class="cx-admin-content">
+        <div class="section-header" style="margin-bottom: 10px;">
+            <span class="section-tag">Administración</span>
+            <h2>Comentarios de la Página de Inicio</h2>
+            <p>{{ total_results }} comentario{{ '' if total_results == 1 else 's' }}. Aquí puedes editarlos, ocultarlos o eliminarlos; los cambios se ven en la sección "Testimonios" del inicio.</p>
+        </div>
+
+        <form method="GET" class="auto-filter-form" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+            <input type="text" name="buscar" placeholder="Buscar por autor, correo o texto..." value="{{ filters.get('buscar', '') }}"
+                   class="cx-input" style="flex: 1; min-width: 220px;">
+            <select name="estado" class="cx-select">
+                <option value="">Todos los estados</option>
+                <option value="Publicado" {% if filters.get('estado') == 'Publicado' %}selected{% endif %}>Publicado</option>
+                <option value="Oculto" {% if filters.get('estado') == 'Oculto' %}selected{% endif %}>Oculto</option>
+            </select>
+            {% if filters %}
+            <a href="{{ url_for('admin.comments_route') }}" class="btn-outline">Limpiar</a>
+            {% endif %}
+        </form>
+
+        <div class="cx-card" style="padding: 0; overflow-x: auto;">
+            <table class="cx-table">
+                <thead>
+                    <tr>
+                        <th>Autor</th><th style="min-width: 380px;">Comentario</th><th>Estado</th><th>Actualizado</th><th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in comments %}
+                    <tr>
+                        <td>
+                            <strong>{{ c.nombre }}</strong>
+                            <br><span style="color:#999; font-size:0.85em;">{{ c.email }}</span>
+                            <br><span style="color:#777; font-size:0.85em;">{{ c.rol }}</span>
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ url_for('admin.edit_comment_route', comentario_id=c.id) }}" style="display:flex; flex-direction:column; gap:6px;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <textarea name="texto" rows="5" minlength="10" maxlength="300" required
+                                          style="width:100%; padding:8px; border:1px solid #ddd; border-radius:8px; font:inherit; resize:vertical;">{{ c.texto }}</textarea>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="color:#999; font-size:0.8em;">{{ c.texto|length }}/300</span>
+                                    <button type="submit" class="btn-primary btn-sm">Guardar</button>
+                                </div>
+                            </form>
+                        </td>
+                        <td>
+                            <span class="cx-badge-status {{ 'cx-badge-success' if c.estado == 'Publicado' else 'cx-badge-warning' }}">{{ c.estado }}</span>
+                        </td>
+                        <td style="white-space: nowrap;">{{ c.actualizado_en }}</td>
+                        <td style="white-space: nowrap;">
+                            <form method="POST" action="{{ url_for('admin.comment_status_route', comentario_id=c.id) }}" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="estado" value="{{ 'Oculto' if c.estado == 'Publicado' else 'Publicado' }}">
+                                <button type="submit" class="btn-outline btn-sm">{{ 'Ocultar' if c.estado == 'Publicado' else 'Publicar' }}</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin.delete_comment_route', comentario_id=c.id) }}" style="display:inline;"
+                                  onsubmit="return confirm('¿Eliminar este comentario permanentemente?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" style="text-align:center; color:#999; padding: 30px;">No se encontraron comentarios.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if total_pages and total_pages > 1 %}
+        <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top: 20px; flex-wrap:wrap;">
+            {% set base_args = request.args.to_dict() %}
+            {% if page > 1 %}
+            <a href="{{ url_for('admin.comments_route', **dict(base_args, page=page-1)) }}" style="padding:8px 14px; border-radius:8px; background:#f0f0f0; text-decoration:none; color:#333;">‹ Anterior</a>
+            {% endif %}
+            <span style="padding:8px 14px; color:#666;">Página {{ page }} de {{ total_pages }} ({{ total_results }} comentarios)</span>
+            {% if page < total_pages %}
+            <a href="{{ url_for('admin.comments_route', **dict(base_args, page=page+1)) }}" style="padding:8px 14px; border-radius:8px; background:var(--primary, #1A4D2E); text-decoration:none; color:#fff;">Siguiente ›</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

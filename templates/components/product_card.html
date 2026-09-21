@@ -1,0 +1,54 @@
+{# ============================================================
+   Tarjeta de producto reutilizable.
+   Uso:
+     {% from 'components/product_card.html' import render_product_card %}
+     {{ render_product_card(pub) }}
+     {{ render_product_card(pub, show_favorite=true, is_favorite=pub.id in favorite_ids) }}
+
+   Acepta filas de `publicaciones` (catálogo) o de `favoritos` (nombres de
+   columna ligeramente distintos: `titulo` vs `producto_nombre`, etc.), por
+   eso cada campo se resuelve con "or" entre las variantes posibles.
+   ============================================================ #}
+{% macro render_product_card(pub, show_favorite=false, is_favorite=false) %}
+<a href="{{ url_for('product.detail', publicacion_id=pub.id) }}" class="cx-product-card">
+    <div class="cx-product-image-wrap">
+        <img src="{{ product_image_url(pub.imagen) }}"
+             alt="{{ pub.titulo or pub.producto_nombre }}"
+             class="cx-product-image" loading="lazy">
+        {% if show_favorite %}
+        <button type="button"
+                class="cx-fav-btn {{ 'cx-fav-active' if is_favorite else '' }}"
+                data-fav-url="{{ url_for('product.favorite_route', publicacion_id=pub.id) }}"
+                data-csrf="{{ csrf_token() }}"
+                title="{{ 'Quitar de favoritos' if is_favorite else 'Agregar a favoritos' }}">{{ '♥' if is_favorite else '♡' }}</button>
+        {% endif %}
+    </div>
+    <div class="cx-product-body">
+        {% if pub.categoria_nombre %}
+        <span class="cx-badge-cat">{{ pub.categoria_nombre }}</span>
+        {% endif %}
+        <h4 style="margin: 0 0 6px 0;">{{ pub.titulo or pub.producto_nombre }}</h4>
+        {% if pub.titulo and pub.producto_nombre %}
+        <p style="color:#888; font-size:0.82em; margin:0 0 6px 0;">{{ pub.producto_nombre }}</p>
+        {% endif %}
+        <p style="font-weight: bold; color: #2ecc71; font-size: 1.15em; margin: 0 0 6px 0;">
+            {{ pub.precio|cop }}
+            {% if pub.unidad_medida %}<span style="color:#999; font-weight:normal; font-size:0.7em;"> / {{ pub.unidad_medida }}</span>{% endif %}
+        </p>
+        {% if pub.cantidad_disponible is not none %}
+        <p style="color: #666; font-size: 0.85em; margin: 0;">{{ pub.cantidad_disponible }} {{ pub.unidad_medida }} disponibles</p>
+        {% endif %}
+        {% if pub.transporte is not none %}
+        <span class="cx-badge-transporte {{ 'si' if pub.transporte else 'no' }}">
+            {{ '🚚 Transporte Disponible' if pub.transporte else '❌ Sin Transporte' }}
+        </span>
+        {% endif %}
+        {% if pub.campesino_nombre %}
+        <p class="cx-product-seller">👤 {{ pub.campesino_nombre }}</p>
+        {% endif %}
+        {% if pub.departamento or pub.municipio %}
+        <p style="color: #999; font-size: 0.8em; margin: 0 0 10px 0;">{{ pub.departamento }}{% if pub.departamento and pub.municipio %}, {% endif %}{{ pub.municipio }}</p>
+        {% endif %}
+    </div>
+</a>
+{% endmacro %}

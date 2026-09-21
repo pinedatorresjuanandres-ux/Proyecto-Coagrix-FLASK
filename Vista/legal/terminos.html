@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Términos y Condiciones - CoAgrix{% endblock %}
+
+{% block extra_css %}
+<style>
+    .legal-doc{
+        max-width: 820px;
+        margin: 0 auto;
+        line-height: 1.7;
+        color: #333;
+    }
+    .legal-doc h1{
+        margin-top: 0;
+    }
+    .legal-doc .legal-fecha{
+        color: #777;
+        font-size: 0.9em;
+        margin-bottom: 30px;
+    }
+    .legal-doc h2{
+        margin-top: 34px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+        color: var(--primary, #1A4D2E);
+        font-size: 1.2em;
+    }
+    .legal-doc ul{
+        padding-left: 22px;
+    }
+    .legal-doc li{
+        margin-bottom: 6px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 0 60px;">
+    <div class="legal-doc">
+        <h1>Términos y Condiciones</h1>
+        <p class="legal-fecha">Última actualización: 8 de septiembre de 2026</p>
+
+        <p>
+            Estos Términos y Condiciones regulan el uso de CoAgrix, una plataforma que conecta a
+            productores agrícolas ("Campesinos") con compradores ("Empresas" y "Comerciantes") para
+            la publicación, negociación y gestión de pedidos de productos del campo. Al crear una
+            cuenta o usar la plataforma, aceptas estos términos.
+        </p>
+
+        <h2>1. Descripción del servicio</h2>
+        <p>
+            CoAgrix es un intermediario tecnológico: pone en contacto a campesinos y compradores,
+            facilita la publicación de productos, la búsqueda/filtrado en el catálogo, el armado de
+            pedidos mediante un carrito de compras y el seguimiento del estado de cada pedido
+            (Pendiente, Aceptado, Rechazado, Completado, Cancelado). CoAgrix no es dueño de los productos
+            publicados, no los produce ni los transporta.
+        </p>
+
+        <h2>2. Registro y cuentas de usuario</h2>
+        <ul>
+            <li>Para usar la plataforma debes registrarte con uno de los roles disponibles: Campesino, Empresa o Comerciante, e indicar información veraz (nombre, correo, teléfono, ubicación y, según el rol, datos como el NIT de tu empresa).</li>
+            <li>Eres responsable de mantener la confidencialidad de tu contraseña y de toda actividad que ocurra en tu cuenta.</li>
+            <li>Debes notificarnos si sospechas de un uso no autorizado de tu cuenta.</li>
+            <li>Nos reservamos el derecho de suspender cuentas que incumplan estos términos o que registren información falsa.</li>
+        </ul>
+
+        <h2>3. Publicación de productos (Campesinos)</h2>
+        <ul>
+            <li>Como Campesino, eres el único responsable de la veracidad de la información que publicas: nombre del producto, descripción, precio, cantidad disponible, unidad de medida, disponibilidad de transporte e imágenes.</li>
+            <li>Las imágenes que subas deben corresponder realmente al producto ofrecido.</li>
+            <li>Debes mantener actualizada la disponibilidad de tus publicaciones y honrar los pedidos que aceptes.</li>
+        </ul>
+
+        <h2>4. Pedidos y proceso de compra (Empresas y Comerciantes)</h2>
+        <ul>
+            <li>Al agregar productos al carrito y confirmar el pedido, se genera un pedido independiente por cada campesino involucrado, que queda en estado "Pendiente" hasta que el campesino lo acepte o lo rechace.</li>
+            <li>El precio, la cantidad y las condiciones mostradas al momento de confirmar el pedido son las que aplican; revisa tu carrito antes de confirmar.</li>
+            <li><strong>CoAgrix no procesa pagos dentro de la plataforma.</strong> El pago, la forma de entrega y cualquier acuerdo logístico se coordinan directamente entre el comprador y el campesino, fuera de la plataforma, salvo que se indique lo contrario en el futuro.</li>
+            <li>CoAgrix no garantiza la calidad, cantidad exacta ni el cumplimiento en la entrega de los productos; esa responsabilidad recae en quien publica el producto.</li>
+        </ul>
+
+        <h2>5. Conducta del usuario</h2>
+        <p>Al usar CoAgrix te comprometes a no:</p>
+        <ul>
+            <li>Publicar información falsa, engañosa o productos que no existen o no puedes entregar.</li>
+            <li>Suplantar a otra persona o empresa, o crear cuentas con datos de terceros sin autorización.</li>
+            <li>Usar la plataforma para actividades fraudulentas, spam o fines distintos a la compraventa agrícola.</li>
+            <li>Intentar vulnerar la seguridad de la plataforma o acceder a cuentas o datos de otros usuarios sin autorización.</li>
+        </ul>
+
+        <h2>6. Mensajería, calificaciones y contenido de usuario</h2>
+        <p>
+            La plataforma incluye mensajería entre usuarios y un sistema de reseñas/calificaciones
+            sobre publicaciones. Eres responsable del contenido que envíes o publiques; no debe ser
+            ofensivo, difamatorio ni contrario a la ley.
+        </p>
+
+        <h2>7. Propiedad intelectual</h2>
+        <p>
+            El nombre CoAgrix, su logo y el diseño de la plataforma son propiedad de CoAgrix. Las
+            imágenes y descripciones de productos que publiques siguen siendo tuyas, pero nos
+            autorizas a mostrarlas dentro de la plataforma para operar el catálogo y los pedidos.
+        </p>
+
+        <h2>8. Limitación de responsabilidad</h2>
+        <p>
+            CoAgrix se ofrece "tal cual" y no garantiza disponibilidad ininterrumpida del servicio.
+            En la máxima medida permitida por la ley, CoAgrix no será responsable por disputas,
+            pérdidas o daños derivados de transacciones acordadas entre campesinos y compradores,
+            ya que actúa únicamente como intermediario tecnológico.
+        </p>
+
+        <h2>9. Suspensión y terminación</h2>
+        <p>
+            Podemos suspender o eliminar cuentas que incumplan estos términos. Puedes dejar de usar
+            la plataforma y solicitar la eliminación de tu cuenta en cualquier momento (ver la
+            <a href="{{ url_for('privacy_page') }}">Política de Privacidad</a> para conocer cómo).
+        </p>
+
+        <h2>10. Cambios a estos términos</h2>
+        <p>
+            Podemos actualizar estos Términos y Condiciones para reflejar cambios en la plataforma
+            o en la normativa aplicable. Publicaremos la fecha de la última actualización en la
+            parte superior de esta página.
+        </p>
+
+        <h2>11. Ley aplicable</h2>
+        <p>
+            Estos términos se rigen por las leyes de la República de Colombia.
+        </p>
+
+        <h2>12. Contacto</h2>
+        <p>
+            Si tienes preguntas sobre estos Términos y Condiciones, puedes escribirnos a través de
+            la mensajería interna de la plataforma.
+        </p>
+    </div>
+</div>
+{% endblock %}

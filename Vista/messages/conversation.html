@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Chat con {{ otro_usuario.nombre }} - CoAgrix{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">{% endblock %}
+{% macro appointment_card(cita, user_id, title) %}<article class="appointment-card estado-{{ cita.estado|lower }}"><div><strong>📅 {{ title }} · {{ cita.estado|lower }}</strong><span>{{ cita.fecha }} · {{ cita.hora }}</span></div>{% if cita.lugar %}<p><b>{{ cita.lugar }}</b></p>{% endif %}<p><b>{{ cita.motivo }}</b>{% if cita.mensaje %}<br>{{ cita.mensaje }}{% endif %}</p><small>Solicitada por {{ cita.solicitante_nombre }}</small>{% if cita.estado == 'Pendiente' and cita.receptor_id == user_id %}<form method="POST" action="{{ url_for('appointment.accept_route', cita_id=cita.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn-primary">Aceptar</button></form><form method="POST" action="{{ url_for('appointment.reject_route', cita_id=cita.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn-outline">Rechazar</button></form>{% elif cita.estado == 'Aceptada' %}<form method="POST" action="{{ url_for('appointment.cancel_route', cita_id=cita.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn-outline">Cancelar</button></form><form method="POST" action="{{ url_for('appointment.complete_route', cita_id=cita.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn-primary">Completar</button></form>{% endif %}</article>{% endmacro %}
+{% block content %}
+<main class="container chat-page" id="chat-root" data-otro-id="{{ otro_usuario.id }}" data-otro-nombre="{{ otro_usuario.nombre }}" data-base-url="{{ url_for('message.inbox_route') }}" data-csrf="{{ csrf_token() }}" data-edit-window="{{ edit_window }}">
+    <a class="chat-back" href="{{ url_for('message.inbox_route') }}">← Volver a mensajes</a>
+    <div class="message-layout conversation-page">
+        <aside class="message-list">
+            <div class="message-list-header"><h2>Conversaciones</h2></div>
+            <div id="conversation-list"></div>
+        </aside>
+        <section class="conversation">
+            <header class="conversation-header">
+                <span class="message-avatar">{{ otro_usuario.nombre[0]|upper }}</span>
+                <div><h2>{{ otro_usuario.nombre }}</h2><p>{{ otro_usuario.email }}</p></div>
+                <div class="conversation-actions">
+                    <button class="btn-outline appointment-open" type="button" data-appointment-modal>Agendar cita</button>
+                    <button class="chat-options" id="chat-options" type="button" aria-label="Más opciones" aria-haspopup="menu">⋮</button>
+                </div>
+            </header>
+            <div id="chat-box" class="conversation-body">
+                {% if latest_appointment %}{{ appointment_card(latest_appointment, session.get('user_id'), 'Última cita') }}
+                {% endif %}
+                <div id="messages"></div>
+            </div>
+            <div class="composer-context" id="composer-context" hidden><div><strong></strong><span></span></div><button type="button" aria-label="Cancelar">×</button></div>
+            <form method="POST" class="conversation-compose" id="chat-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><textarea name="contenido" rows="1" maxlength="{{ max_length }}" placeholder="Escribe un mensaje..." required autocomplete="off"></textarea><button type="submit" class="btn-primary">Enviar</button></form>
+        </section>
+    </div>
+</main>
+<script type="application/json" id="chat-data">{{ chat_data|tojson }}</script>
+<div class="appointment-modal" id="history-modal" hidden data-count="{{ appointment_history|length }}" data-pending="{{ pending_history }}"><div class="appointment-dialog"><button type="button" class="appointment-close" data-history-close aria-label="Cerrar">×</button><h2>Historial de citas</h2><p class="appointment-history-intro">Todas las citas con {{ otro_usuario.nombre }}, de la más lejana a la más antigua.</p><div class="appointment-history-list">{% for cita in appointment_history %}{{ appointment_card(cita, session.get('user_id'), 'Cita') }}{% else %}<p class="appointment-history-empty">Aún no hay citas agendadas con esta persona.</p>{% endfor %}</div></div></div>
+<div class="appointment-modal" id="appointment-modal" hidden><div class="appointment-dialog"><button type="button" class="appointment-close" data-appointment-close aria-label="Cerrar">×</button><h2>Agendar citas</h2><form method="POST" action="{{ url_for('appointment.create_route', otro_usuario_id=otro_usuario.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><div id="appointment-rows"><fieldset class="appointment-row"><legend>Cita 1</legend><button type="button" class="appointment-remove" data-appointment-remove aria-label="Quitar cita" hidden>Quitar</button><label>Fecha<input type="date" name="fecha" min="{{ tomorrow }}" required></label><label>Hora<input type="time" name="hora" required></label><label>Lugar (opcional)<input type="text" name="lugar"></label><label>Motivo<input type="text" name="motivo" required></label><label>Mensaje (opcional)<textarea name="mensaje" rows="2"></textarea></label></fieldset></div><button type="button" class="btn-outline appointment-add" data-appointment-add>+ Agregar otra cita</button><button class="btn-primary" type="submit">Proponer citas</button></form></div></div>
+{% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='js/chat.js') }}" defer></script>
+<script>const modal=document.getElementById('appointment-modal'); document.querySelector('[data-appointment-modal]')?.addEventListener('click',()=>modal.hidden=false); document.querySelector('[data-appointment-close]')?.addEventListener('click',()=>modal.hidden=true);
+const rows=document.getElementById('appointment-rows'), MAX_ROWS=10;
+const refreshRows=()=>{const all=rows.querySelectorAll('.appointment-row'); all.forEach((r,i)=>{r.querySelector('legend').textContent='Cita '+(i+1); r.querySelector('[data-appointment-remove]').hidden=all.length===1;}); document.querySelector('[data-appointment-add]').disabled=all.length>=MAX_ROWS;};
+document.querySelector('[data-appointment-add]')?.addEventListener('click',()=>{const clone=rows.querySelector('.appointment-row').cloneNode(true); clone.querySelectorAll('input,textarea').forEach(f=>f.value=''); rows.appendChild(clone); refreshRows(); clone.querySelector('input')?.focus();});
+rows?.addEventListener('click',e=>{const btn=e.target.closest('[data-appointment-remove]'); if(btn){btn.closest('.appointment-row').remove(); refreshRows();}});</script>{% endblock %}

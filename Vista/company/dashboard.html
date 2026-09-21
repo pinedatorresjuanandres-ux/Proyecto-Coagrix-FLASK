@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Empresa - CoAgrix{% endblock %}
+
+{% block content %}
+{% from 'components/badges.html' import estado_pedido %}
+<div class="container" style="padding: 40px 0;">
+    <div class="section-header">
+        <span class="section-tag">Panel Empresarial</span>
+        <h2>Bienvenido, {{ session.get('user_name') }}</h2>
+        <p>Busca, compara y realiza pedidos de productos agrícolas.</p>
+    </div>
+
+    <div class="features-grid" style="margin-top: 30px;">
+        <div class="feature-card glass">
+            <div class="feat-icon">🔍</div>
+            <h4>Buscar Productos</h4>
+            <p>Explora el catálogo de productos disponibles.</p>
+            <a href="{{ url_for('product.catalog_route') }}" class="btn-primary" style="margin-top: 15px; display: inline-block;">Ir al Catálogo</a>
+        </div>
+        
+        <div class="feature-card glass">
+            <div class="feat-icon">💰</div>
+            <h4>Comparar Precios</h4>
+            <p>Analiza precios entre diferentes vendedores.</p>
+            <a href="{{ url_for('company.compare_route') }}" class="btn-primary" style="margin-top: 15px; display: inline-block;">Comparar</a>
+        </div>
+
+        <div class="feature-card glass">
+            <div class="feat-icon">📦</div>
+            <h4>Mis Pedidos</h4>
+            <p>Consulta el estado de tus compras.</p>
+            <a href="{{ url_for('cart.orders_route') }}" class="btn-primary" style="margin-top: 15px; display: inline-block;">Ver Pedidos</a>
+        </div>
+
+        <div class="feature-card glass">
+            <div class="feat-icon">⭐</div>
+            <h4>Mis Favoritos</h4>
+            <p>Accede a tus productos guardados.</p>
+            <a href="{{ url_for('product.favorites_route') }}" class="btn-primary" style="margin-top: 15px; display: inline-block;">Ver Favoritos</a>
+        </div>
+
+        <div class="feature-card glass">
+            <div class="feat-icon">💬</div>
+            <h4>Mensajes</h4>
+            <p>Comunícate con los productores.</p>
+            <a href="{{ url_for('message.inbox_route') }}" class="btn-primary" style="margin-top: 15px; display: inline-block;">Ver Mensajes</a>
+        </div>
+
+        <div class="feature-card glass">
+            <div class="feat-icon">📊</div>
+            <h4>Historial de Compras</h4>
+            <p>Revisa tus compras anteriores.</p>
+            <a href="{{ url_for('cart.orders_route') }}" class="btn-primary" style="margin-top: 15px; display: inline-block;">Ver Historial</a>
+        </div>
+
+        <div class="feature-card glass">
+            <div class="feat-icon">👤</div>
+            <h4>Mi Perfil</h4>
+            <p>Actualiza tu información empresarial.</p>
+            <a href="{{ url_for('company.profile_route') }}" class="btn-primary" style="margin-top: 15px; display: inline-block;">Editar Perfil</a>
+        </div>
+    </div>
+
+    {% if recent_orders %}
+    <div style="margin-top: 50px;">
+        <h3>Pedidos Recientes</h3>
+        <div class="cx-table-wrap"><table class="cx-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Items</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.fecha_pedido }}</td>
+                    <td>{{ estado_pedido(order.estado) }}</td>
+                    <td>{{ order.items_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table></div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

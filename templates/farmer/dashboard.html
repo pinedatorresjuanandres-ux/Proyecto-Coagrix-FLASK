@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% from 'components/stat_card.html' import render_stat_card %}
+{% block title %}Panel del Campesino - CoAgrix{%
+endblock %} {% block content %}
+<div class="container" style="padding: 40px 0">
+  <div class="section-header">
+    <span class="section-tag">Panel de Control</span>
+    <h2>Bienvenido, {{ session.get('user_name') }}</h2>
+    <p>Gestiona tus cultivos, productos y ventas desde aquí.</p>
+  </div>
+
+  {% if stats %}
+  <div class="cx-stats-grid">
+    {{ render_stat_card('📢', 'Publicaciones', stats.total_publicaciones, numeric=stats.total_publicaciones) }}
+    {{ render_stat_card('📦', 'Pedidos recibidos', stats.total_pedidos, numeric=stats.total_pedidos) }}
+    {{ render_stat_card('💰', 'Ingresos totales', (stats.ingresos_totales or 0)|cop) }}
+  </div>
+  {% endif %}
+
+  <div class="features-grid" style="margin-top: 30px">
+    <div class="feature-card glass">
+      <div class="feat-icon">👤</div>
+      <h4>Mi Perfil</h4>
+      <p>Visualiza y edita tu información personal.</p>
+      <a
+        href="{{ url_for('farmer.profile') }}"
+        class="btn-primary"
+        style="margin-top: 15px; display: inline-block"
+        >Ver Perfil</a
+      >
+    </div>
+
+    <div class="feature-card glass">
+      <div class="feat-icon">🛒</div>
+      <h4>Catálogo</h4>
+      <p>Explora todos los productos publicados en CoAgrix.</p>
+      <a href="{{ url_for('product.catalog_route') }}" class="btn-primary" style="margin-top: 15px; display: inline-block"
+        >Ver Catálogo</a
+      >
+    </div>
+
+    <div class="feature-card glass">
+      <div class="feat-icon">📢</div>
+      <h4>Mis Publicaciones</h4>
+      <p>Publica tus productos para la venta.</p>
+      <a
+        href="{{ url_for('farmer.publications') }}"
+        class="btn-primary"
+        style="margin-top: 15px; display: inline-block"
+        >Ver Publicaciones</a
+      >
+    </div>
+
+    <div class="feature-card glass">
+      <div class="feat-icon">📦</div>
+      <h4>Pedidos Recibidos</h4>
+      <p>Consulta y gestiona las órdenes de compra.</p>
+      <a
+        href="{{ url_for('farmer.orders_route') }}"
+        class="btn-primary"
+        style="margin-top: 15px; display: inline-block"
+        >Ver Pedidos</a
+      >
+    </div>
+
+    <div class="feature-card glass">
+      <div class="feat-icon">💬</div>
+      <h4>Mensajes</h4>
+      <p>Comunícate con tus compradores.</p>
+      <a
+        href="{{ url_for('message.inbox_route') }}"
+        class="btn-primary"
+        style="margin-top: 15px; display: inline-block"
+        >Ver Mensajes</a
+      >
+    </div>
+
+    <div class="feature-card glass">
+      <div class="feat-icon">📈</div>
+      <h4>Estadísticas</h4>
+      <p>Consulta tus ingresos y ventas.</p>
+      {% if stats %}
+      <p style="color:#2ecc71; font-weight:600; margin-top:10px;">
+        {{ stats.total_pedidos }} pedidos · {{ (stats.ingresos_totales or 0)|cop }} en ingresos
+      </p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

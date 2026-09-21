@@ -1,0 +1,21 @@
+{# ============================================================
+   Modal de confirmación genérico. Se incluye UNA vez en base.html.
+   Cualquier <form method="POST"> en cualquier página puede activar
+   este modal en vez del confirm() nativo del navegador agregando:
+
+     <form method="POST" action="..." data-confirm="¿Eliminar esta publicación?">
+
+   Opcionalmente data-confirm-title="Eliminar publicación" para el
+   título. La lógica vive en static/js/components.js (CxModal).
+   ============================================================ #}
+<div class="cx-modal-overlay" id="cxConfirmModal">
+    <div class="cx-modal-box" role="dialog" aria-modal="true">
+        <div class="cx-modal-icon">⚠️</div>
+        <h3 class="cx-modal-title" data-cx-title>¿Estás seguro?</h3>
+        <p class="cx-modal-message" data-cx-message>Esta acción no se puede deshacer.</p>
+        <div class="cx-modal-actions">
+            <button type="button" class="btn-outline btn-sm" data-cx-cancel>Cancelar</button>
+            <button type="button" class="btn-primary btn-sm" data-cx-confirm>Confirmar</button>
+        </div>
+    </div>
+</div>

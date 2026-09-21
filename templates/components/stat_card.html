@@ -1,0 +1,28 @@
+{# ============================================================
+   Tarjeta de estadística reutilizable para los paneles (admin,
+   campesino, empresa, comerciante). Reutiliza las clases
+   .cx-stat-card / .cx-stat-icon / .cx-stat-value / .cx-stat-label
+   ya definidas en theme.css para el panel de administrador.
+
+   Uso:
+     {% from 'components/stat_card.html' import render_stat_card %}
+     {{ render_stat_card('📢', 'Publicaciones', stats.total_publicaciones) }}
+
+   Si `numeric` es un número entero, el valor se anima al cargar la
+   página (ver data-cx-count en components.js). Para valores ya
+   formateados (por ejemplo con el filtro |cop) se muestran tal cual,
+   sin animación, pasando `numeric=none` (por defecto).
+   ============================================================ #}
+{% macro render_stat_card(icon, label, value, numeric=none, prefix='', suffix='') %}
+<div class="cx-stat-card">
+    <div class="cx-stat-icon">{{ icon }}</div>
+    <div>
+        {% if numeric is not none %}
+        <div class="cx-stat-value" data-cx-count="{{ numeric }}" data-cx-prefix="{{ prefix }}" data-cx-suffix="{{ suffix }}">0</div>
+        {% else %}
+        <div class="cx-stat-value">{{ value }}</div>
+        {% endif %}
+        <div class="cx-stat-label">{{ label }}</div>
+    </div>
+</div>
+{% endmacro %}

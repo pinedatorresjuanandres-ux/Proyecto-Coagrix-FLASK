@@ -1,0 +1,17 @@
+{# ============================================================
+   Estrellas de calificación reutilizables.
+   Uso:
+     {% from 'components/star_rating.html' import render_stars %}
+     {{ render_stars(rating.promedio, rating.total) }}
+   ============================================================ #}
+{% macro render_stars(promedio, total) %}
+{% if total and total > 0 %}
+{% set full = promedio|round(0, 'floor')|int %}
+<span class="cx-stars" title="{{ promedio }} de 5">
+    {% for i in range(5) %}{% if i < full %}<span class="cx-star-filled">★</span>{% else %}★{% endif %}{% endfor %}
+    <span class="cx-rating-count">{{ promedio }}/5 · {{ total }} reseña{{ 's' if total != 1 else '' }}</span>
+</span>
+{% else %}
+<span class="cx-rating-count">Sin calificaciones todavía</span>
+{% endif %}
+{% endmacro %}

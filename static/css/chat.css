@@ -1,0 +1,766 @@
+/* Chat UI ported from the React frontend. Scoped to the messaging views. */
+.chat-page {
+    max-width: 1180px;
+    padding-top: 36px;
+    padding-bottom: 56px;
+}
+
+.chat-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.chat-eyebrow {
+    display: block;
+    color: var(--cx-green);
+    font-size: .73rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.chat-heading h1 {
+    margin: 5px 0 6px;
+    color: var(--verde-carbon);
+}
+
+.chat-heading p {
+    margin: 0;
+    color: #68766d;
+}
+
+.message-layout {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    min-height: 590px;
+    overflow: hidden;
+    border: 1px solid #dce5dd;
+    border-radius: var(--cx-radius);
+    background: #fff;
+    box-shadow: var(--cx-shadow);
+}
+
+.message-list {
+    border-right: 1px solid #dce5dd;
+    background: #fcfdfb;
+}
+
+.message-list-header {
+    padding: 20px;
+    border-bottom: 1px solid #dce5dd;
+}
+
+.message-list-header h2 {
+    margin: 0 0 12px;
+    font-size: 1rem;
+    color: var(--verde-carbon);
+}
+
+.message-filter {
+    width: 100%;
+}
+
+.message-card {
+    position: relative;
+    display: flex;
+    gap: 11px;
+    padding: 15px 17px;
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid #e9efea;
+    transition: background .18s ease;
+}
+
+.message-card:hover,
+.message-card.active {
+    background: var(--verde-suave);
+}
+
+/* Chat del administrador, fijado arriba para todos los usuarios */
+.message-card.pinned {
+    border-left: 3px solid var(--dorado, #e6b542);
+    background: #fffaf0;
+}
+
+.message-card.pinned:hover,
+.message-card.pinned.active {
+    background: var(--verde-suave);
+}
+
+.message-avatar {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    background: var(--cx-green);
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+.message-copy {
+    min-width: 0;
+    flex: 1;
+}
+
+.message-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.message-head strong {
+    overflow: hidden;
+    color: var(--verde-carbon);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .83rem;
+}
+
+.message-head time {
+    flex: 0 0 auto;
+    color: #7b8980;
+    font-size: .68rem;
+}
+
+.message-copy small {
+    display: block;
+    overflow: hidden;
+    margin-top: 2px;
+    color: var(--cx-green);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .7rem;
+}
+
+.message-copy p {
+    overflow: hidden;
+    margin: 4px 0 0;
+    color: #738078;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .74rem;
+}
+
+.unread-badge {
+    align-self: center;
+    min-width: 20px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    color: #fff;
+    background: var(--dorado);
+    text-align: center;
+    font-size: .68rem;
+    font-weight: 700;
+}
+
+.conversation {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    background: #fbfdf9;
+}
+
+.conversation-header {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 18px 22px;
+    border-bottom: 1px solid #dce5dd;
+    background: #fff;
+}
+
+.conversation-header h2 {
+    margin: 0;
+    color: var(--verde-carbon);
+    font-size: .98rem;
+}
+
+.conversation-header p {
+    margin: 3px 0 0;
+    color: #738078;
+    font-size: .74rem;
+}
+
+.conversation-body {
+    flex: 1;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.date-divider {
+    margin: 3px auto 18px;
+    color: #7b8980;
+    text-align: center;
+    font-size: .7rem;
+}
+
+.bubble {
+    position: relative;
+    width: fit-content;
+    min-width: 92px;
+    max-width: 68%;
+    margin: 10px 0;
+    padding: 11px 26px 9px 14px;
+    border-radius: 15px 15px 15px 3px;
+    color: var(--gris-texto);
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(36, 71, 39, .06);
+    font-size: .86rem;
+    line-height: 1.45;
+}
+
+.bubble.me {
+    margin-left: auto;
+    border-radius: 15px 15px 3px 15px;
+    color: #fff;
+    background: var(--cx-green);
+}
+
+.bubble small {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 4px;
+    opacity: .68;
+    font-size: .68rem;
+}
+
+.bubble-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.bubble .edited {
+    font-style: italic;
+}
+
+.bubble .ticks {
+    letter-spacing: -2px;
+    font-size: .74rem;
+    font-weight: 700;
+}
+
+.bubble .ticks.read {
+    color: #8fe0ff;
+    opacity: 1;
+}
+
+.bubble.deleted {
+    background: #f1f4f0;
+    color: #7b8980;
+    font-style: italic;
+    box-shadow: none;
+}
+
+.bubble.me.deleted {
+    background: #dfe9df;
+}
+
+.bubble.flash {
+    animation: bubble-flash 1.4s ease;
+}
+
+@keyframes bubble-flash {
+    0%, 60% { box-shadow: 0 0 0 3px rgba(230, 181, 66, .75); }
+    100% { box-shadow: 0 3px 12px rgba(36, 71, 39, .06); }
+}
+
+/* Cita del mensaje al que se responde */
+.bubble-quote {
+    display: block;
+    width: 100%;
+    margin: 0 0 6px;
+    padding: 6px 9px;
+    border: 0;
+    border-left: 3px solid var(--dorado, #e6b542);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, .06);
+    color: inherit;
+    text-align: left;
+    font: inherit;
+    font-size: .76rem;
+    cursor: pointer;
+}
+
+.bubble.me .bubble-quote {
+    background: rgba(255, 255, 255, .18);
+}
+
+.bubble-quote strong,
+.bubble-quote span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bubble-quote span {
+    opacity: .85;
+}
+
+/* Flecha de opciones: aparece al pasar el mouse (siempre visible en pantallas táctiles) */
+.bubble-menu-btn {
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    font-size: .9rem;
+    line-height: 1;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity .15s ease;
+}
+
+.bubble:hover .bubble-menu-btn,
+.bubble-menu-btn:focus-visible {
+    opacity: .8;
+}
+
+@media (hover: none) {
+    .bubble-menu-btn {
+        opacity: .6;
+    }
+}
+
+.conversation-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.conversation-actions .appointment-open {
+    margin-left: 0;
+}
+
+.chat-options {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--verde-carbon);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.chat-options:hover {
+    background: var(--verde-suave);
+}
+
+/* Menú flotante de opciones (mensaje / conversación) */
+.chat-menu {
+    position: fixed;
+    z-index: 60;
+    min-width: 230px;
+    padding: 6px;
+    border: 1px solid #dce5dd;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(18, 57, 33, .2);
+}
+
+.chat-menu-item {
+    display: block;
+    width: 100%;
+    padding: 9px 12px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--verde-carbon);
+    text-align: left;
+    font: inherit;
+    font-size: .82rem;
+    cursor: pointer;
+}
+
+.chat-menu-item:hover,
+.chat-menu-item:focus-visible {
+    background: var(--verde-suave);
+    outline: none;
+}
+
+.chat-menu-item.danger {
+    color: #b03a3a;
+}
+
+.chat-toast {
+    position: fixed;
+    z-index: 70;
+    left: 50%;
+    bottom: 26px;
+    max-width: min(92vw, 420px);
+    padding: 11px 18px;
+    border-radius: 10px;
+    background: #123921;
+    color: #fff;
+    font-size: .84rem;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 10px);
+    transition: opacity .2s ease, transform .2s ease;
+}
+
+.chat-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* Barra "Respondiendo a… / Editando mensaje" sobre la caja de texto */
+.composer-context {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 15px;
+    border-top: 1px solid #dce5dd;
+    border-left: 4px solid var(--cx-green);
+    background: #f4fbf4;
+    font-size: .78rem;
+}
+
+.composer-context[hidden] {
+    display: none;
+}
+
+.composer-context>div {
+    min-width: 0;
+    flex: 1;
+}
+
+.composer-context strong,
+.composer-context span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.composer-context strong {
+    color: var(--cx-green);
+}
+
+.composer-context span {
+    color: #738078;
+}
+
+.composer-context button {
+    border: 0;
+    background: none;
+    color: var(--verde-carbon);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.conversation-compose {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 15px;
+    border-top: 1px solid #dce5dd;
+    background: #fff;
+}
+
+.conversation-compose input,
+.conversation-compose textarea {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 13px;
+    border: 1px solid #dce5dd;
+    border-radius: 10px;
+    outline: none;
+    font: inherit;
+    font-size: .9rem;
+    line-height: 1.4;
+    resize: none;
+    overflow-y: auto;
+}
+
+.conversation-compose textarea {
+    max-height: 140px;
+}
+
+.conversation-compose button {
+    align-self: flex-end;
+    height: 44px;
+}
+
+.conversation-compose input:focus,
+.conversation-compose textarea:focus {
+    border-color: var(--cx-green);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, .14);
+}
+
+.empty-conversation {
+    display: flex;
+    min-height: 340px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    text-align: center;
+}
+
+.empty-conversation span {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.empty-conversation h2 {
+    margin: 12px 0 8px;
+    color: var(--verde-carbon);
+}
+
+.empty-conversation p {
+    max-width: 380px;
+    margin: 0 auto;
+    color: #738078;
+    text-align: center;
+}
+
+.chat-back {
+    display: inline-block;
+    margin-bottom: 15px;
+    color: var(--cx-green);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.appointment-open {
+    margin-left: auto;
+    padding: 7px 11px;
+    font-size: .75rem;
+    cursor: pointer;
+}
+
+.appointment-card {
+    margin: 12px 0;
+    padding: 14px;
+    border: 1px solid #cfe4d2;
+    border-left: 4px solid var(--cx-green);
+    border-radius: 10px;
+    background: #f4fbf4;
+    font-size: .78rem;
+}
+
+.appointment-card>div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    color: var(--verde-carbon);
+}
+
+.appointment-card>div span {
+    white-space: nowrap;
+}
+
+.appointment-card p {
+    margin: 7px 0;
+}
+
+.appointment-card>small {
+    display: block;
+    margin-top: 8px;
+    color: #738078;
+}
+
+.appointment-card form {
+    display: inline-block;
+    margin: 12px 10px 0 0;
+    vertical-align: middle;
+}
+
+.appointment-card button {
+    padding: 7px 14px;
+    font-size: .74rem;
+    white-space: nowrap;
+}
+
+/* Color del borde según el estado de la cita */
+.appointment-card.estado-pendiente {
+    border-left-color: var(--dorado, #e6b542);
+    background: #fffaf0;
+}
+
+.appointment-card.estado-rechazada,
+.appointment-card.estado-cancelada {
+    border-left-color: #c96a6a;
+    background: #fbf3f3;
+}
+
+.appointment-card.estado-completada {
+    border-left-color: #8a938c;
+    background: #f5f6f4;
+}
+
+/* Historial de citas (ventana que se abre desde el menú ⋮) */
+.appointment-history-intro {
+    margin: -6px 0 6px;
+    color: #738078;
+    font-size: .78rem;
+}
+
+.appointment-history-list .appointment-card {
+    margin: 10px 0;
+}
+
+.appointment-history-empty {
+    margin: 22px 0;
+    color: #738078;
+    text-align: center;
+    font-size: .82rem;
+}
+
+.appointment-modal[hidden] {
+    display: none;
+}
+
+.appointment-modal {
+    position: fixed;
+    z-index: 20;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    background: rgba(11, 37, 21, .55);
+}
+
+.appointment-dialog {
+    position: relative;
+    width: min(100%, 510px);
+    max-height: 90vh;
+    overflow: auto;
+    padding: 26px;
+    border-radius: var(--cx-radius);
+    background: #fff;
+    box-shadow: var(--cx-shadow);
+}
+
+.appointment-dialog h2 {
+    margin-top: 0;
+    color: var(--verde-carbon);
+}
+
+.appointment-dialog form {
+    display: grid;
+    gap: 12px;
+}
+
+.appointment-dialog label {
+    display: grid;
+    gap: 5px;
+    color: var(--verde-carbon);
+    font-size: .78rem;
+    font-weight: 600;
+}
+
+.appointment-dialog input,
+.appointment-dialog select,
+.appointment-dialog textarea {
+    padding: 9px;
+}
+
+.appointment-row {
+    position: relative;
+    display: grid;
+    gap: 12px;
+    margin: 0 0 12px;
+    padding: 14px;
+    border: 1px solid #cfe4d2;
+    border-radius: 10px;
+}
+
+.appointment-row legend {
+    padding: 0 6px;
+    color: var(--verde-carbon);
+    font-size: .8rem;
+    font-weight: 700;
+}
+
+.appointment-remove {
+    position: absolute;
+    top: -12px;
+    right: 10px;
+    padding: 2px 8px;
+    border: 1px solid #e0b4b4;
+    border-radius: 6px;
+    background: #fff;
+    color: #b03a3a;
+    font-size: .72rem;
+    cursor: pointer;
+}
+
+.appointment-remove[hidden] {
+    display: none;
+}
+
+.appointment-add {
+    cursor: pointer;
+}
+
+.appointment-add:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.appointment-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    border: 0;
+    background: none;
+    color: var(--verde-carbon);
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+@media (max-width: 760px) {
+    .chat-page {
+        padding-top: 24px;
+    }
+
+    .chat-heading {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .message-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .message-list {
+        border-right: 0;
+        border-bottom: 1px solid #dce5dd;
+    }
+
+    .message-layout.conversation-page .message-list {
+        display: none;
+    }
+
+    .conversation {
+        min-height: 500px;
+    }
+
+    .bubble {
+        max-width: 82%;
+    }
+}

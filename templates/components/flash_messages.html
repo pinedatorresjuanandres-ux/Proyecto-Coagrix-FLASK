@@ -1,0 +1,10 @@
+
+<div id="cxToastContainer" class="cx-toast-container" aria-live="polite"></div>
+
+<div id="cxFlashData" hidden>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <span data-flash-message="{{ message }}" data-flash-category="{{ 'error' if category == 'error' else category }}"></span>
+        {% endfor %}
+    {% endwith %}
+</div>

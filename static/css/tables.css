@@ -1,0 +1,148 @@
+/* ============================================================
+   CoAgrix — tables.css
+   Estilo único para todas las tablas (campesino, empresa,
+   comerciante y administrador). Se carga después de
+   coagrix-redesign.css, que tiene reglas globales de `table`.
+   Uso:  <div class="cx-table-wrap"><table class="cx-table">…</table></div>
+         (la tarjeta `cx-table-wrap` da el marco y el scroll en celulares;
+          `t-center` / `t-right` alinean una columna).
+============================================================ */
+
+.cx-table-wrap {
+    margin-top: 1.25rem;
+    overflow-x: auto;
+    background: #fff;
+    border: 1px solid rgba(18, 57, 33, 0.08);
+    border-radius: 18px;
+    box-shadow: 0 14px 34px -18px rgba(18, 57, 33, 0.28), 0 2px 6px rgba(18, 57, 33, 0.05);
+}
+
+/* Reinicia lo que la regla global `table {}` le pone a cada tabla. */
+table.cx-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent;
+    border-radius: 14px;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.cx-table-wrap > table.cx-table {
+    min-width: 560px;
+    border-radius: 0;
+}
+
+/* ---- Encabezado: el degradado va en toda la fila, no en cada celda (se vería a franjas) ---- */
+table.cx-table thead {
+    background: linear-gradient(135deg, #123921 0%, #1c4a2c 100%);
+}
+
+table.cx-table thead th {
+    padding: 15px 18px !important;
+    text-align: left;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #fff !important;
+    background: transparent !important;
+    border: 0 !important;
+}
+
+/* ---- Filas ---- */
+table.cx-table tbody td,
+table.cx-table tfoot td {
+    padding: 15px 18px !important;
+    vertical-align: middle;
+    font-size: 0.94rem;
+    color: #2b3a30;
+    border-bottom: 1px solid #edf1ec;
+    transition: background 0.2s;
+}
+
+table.cx-table tbody tr:last-child td { border-bottom: 0; }
+table.cx-table tbody tr:nth-child(even) td { background: #fafcf9; }
+table.cx-table tbody tr:hover td { background: #f0f8ec !important; }
+
+/* Fila de "sin resultados" */
+table.cx-table tbody td[colspan] {
+    padding: 34px 18px !important;
+    text-align: center;
+    color: #8a938c;
+}
+
+/* ---- Pie (totales) ---- */
+table.cx-table tfoot td {
+    font-weight: 700;
+    color: #123921;
+    background: #f3f8f1;
+    border-top: 2px solid #cfe3cb;
+    border-bottom: 0;
+}
+
+/* ---- Alineación ---- */
+table.cx-table .t-center { text-align: center !important; }
+table.cx-table .t-right { text-align: right !important; }
+
+/* Cifras, fechas y estados no se parten en dos líneas. */
+table.cx-table td.t-center,
+table.cx-table td.t-right,
+table.cx-table td.nowrap { white-space: nowrap; }
+
+/* ---- Botones de acción: separados y que bajan de línea en vez de amontonarse ----
+   Los formularios de acción llevan `display:inline` en línea, por eso el !important.
+   Solo afecta formularios cuyo botón es hijo directo (no el de edición de comentarios). */
+table.cx-table td:has(> form > button),
+table.cx-table td:has(> a.btn-sm) {
+    min-width: 170px;
+    white-space: normal !important;
+}
+
+table.cx-table td > form:has(> button),
+table.cx-table td > a.btn-sm,
+table.cx-table td > a.btn-outline,
+table.cx-table td > a.btn-primary {
+    display: inline-block !important;
+    margin: 4px 5px !important;
+    vertical-align: middle;
+}
+
+table.cx-table td > form > button,
+table.cx-table td > a.btn-sm,
+table.cx-table td > a.btn-outline,
+table.cx-table td > a.btn-primary {
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* ---- Enlaces de texto dentro de la tabla (los botones conservan su estilo) ---- */
+table.cx-table td a:not([class]) {
+    color: #2E7D32;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+table.cx-table td a:not([class]):hover {
+    color: #123921;
+    text-decoration: underline;
+}
+
+/* ---- Etiquetas de estado ---- */
+.cx-badge-status {
+    white-space: nowrap;
+    padding: 5px 13px;
+    letter-spacing: 0.02em;
+}
+
+.cx-badge-info { background: #e8eefc; color: #2a4a9e; }
+
+/* ---- Celulares ---- */
+@media (max-width: 700px) {
+    table.cx-table thead th,
+    table.cx-table tbody td,
+    table.cx-table tfoot td {
+        padding: 12px 14px !important;
+    }
+}

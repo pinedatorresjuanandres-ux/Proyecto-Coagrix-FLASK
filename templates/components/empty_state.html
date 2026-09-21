@@ -1,0 +1,17 @@
+{# ============================================================
+   Estado vacío reutilizable (listas sin resultados, sin favoritos, etc.).
+   Uso:
+     {% from 'components/empty_state.html' import render_empty_state %}
+     {{ render_empty_state('🔎', 'Sin resultados', 'No hay productos con esos filtros.') }}
+     {{ render_empty_state('⭐', 'Sin favoritos', 'Aún no guardas productos.', cta_url=url_for('product.catalog_route'), cta_text='Ir al catálogo') }}
+   ============================================================ #}
+{% macro render_empty_state(icon, title, message, cta_url=none, cta_text=none) %}
+<div class="cx-empty-state">
+    <div class="cx-empty-icon">{{ icon }}</div>
+    <p class="cx-empty-title">{{ title }}</p>
+    <p class="cx-empty-text">{{ message }}</p>
+    {% if cta_url %}
+    <a href="{{ cta_url }}" class="btn-primary cx-empty-cta">{{ cta_text or 'Ver más' }}</a>
+    {% endif %}
+</div>
+{% endmacro %}

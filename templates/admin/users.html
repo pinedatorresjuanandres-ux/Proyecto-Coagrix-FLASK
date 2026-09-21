@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Gestión de Usuarios - CoAgrix{% endblock %}
+{% block content %}
+<div class="cx-admin-layout">
+    {% include 'admin/_sidebar.html' %}
+    {% set active = 'users' %}
+
+    <div class="cx-admin-content">
+        <div class="section-header" style="margin-bottom: 10px;">
+            <span class="section-tag">Administración</span>
+            <h2>Gestión de Usuarios</h2>
+            <p>{{ users|length }} usuario{{ 's' if users|length != 1 else '' }} encontrado{{ 's' if users|length != 1 else '' }}.</p>
+        </div>
+
+        <form method="GET" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+            <input type="text" name="buscar" placeholder="Buscar por nombre o email..." value="{{ filters.get('buscar', '') }}"
+                   class="cx-input" style="flex: 1; min-width: 220px;">
+            <select name="rol" class="cx-select">
+                <option value="">Todos los roles</option>
+                {% for r in roles %}
+                <option value="{{ r.nombre }}" {% if filters.get('rol') == r.nombre %}selected{% endif %}>{{ r.nombre }}</option>
+                {% endfor %}
+            </select>
+            <select name="estado" class="cx-select">
+                <option value="">Todos los estados</option>
+                <option value="Activo" {% if filters.get('estado') == 'Activo' %}selected{% endif %}>Activo</option>
+                <option value="Inactivo" {% if filters.get('estado') == 'Inactivo' %}selected{% endif %}>Inactivo</option>
+            </select>
+            <button type="submit" class="btn-primary">Filtrar</button>
+            {% if filters %}
+            <a href="{{ url_for('admin.users_route') }}" class="btn-outline">Limpiar</a>
+            {% endif %}
+        </form>
+
+        <div class="cx-card" style="padding: 0; overflow-x: auto;">
+            <table class="cx-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th><th>Email</th><th>Rol</th><th>Estado</th><th>Registrado</th><th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td><strong>{{ user.nombre }}</strong></td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.rol_nombre }}</td>
+                        <td>
+                            <span class="cx-badge-status {{ 'cx-badge-success' if user.estado == 'Activo' else 'cx-badge-danger' }}">
+                                {{ user.estado }}
+                            </span>
+                        </td>
+                        <td>{{ user.fecha_registro }}</td>
+                        <td style="white-space: nowrap;">
+                            <a href="{{ url_for('admin.user_detail_route', usuario_id=user.id) }}" class="btn-outline btn-sm">Ver</a>
+                            <form method="POST" action="{{ url_for('admin.toggle_user_route', usuario_id=user.id) }}" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-outline btn-sm">
+                                    {{ 'Desactivar' if user.estado == 'Activo' else 'Activar' }}
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin.delete_user_route', usuario_id=user.id) }}" style="display:inline;"
+                                  data-confirm="¿Eliminar este usuario permanentemente? Esta acción no se puede deshacer." data-confirm-title="Eliminar usuario">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" style="text-align:center; color:#999; padding: 30px;">No se encontraron usuarios.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if total_pages and total_pages > 1 %}
+        <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top: 20px; flex-wrap:wrap;">
+            {% set base_args = request.args.to_dict() %}
+            {% if page > 1 %}
+            <a href="{{ url_for('admin.users_route', **dict(base_args, page=page-1)) }}" style="padding:8px 14px; border-radius:8px; background:#f0f0f0; text-decoration:none; color:#333;">‹ Anterior</a>
+            {% endif %}
+            <span style="padding:8px 14px; color:#666;">Página {{ page }} de {{ total_pages }} ({{ total_results }} usuarios)</span>
+            {% if page < total_pages %}
+            <a href="{{ url_for('admin.users_route', **dict(base_args, page=page+1)) }}" style="padding:8px 14px; border-radius:8px; background:var(--primary, #1A4D2E); text-decoration:none; color:#fff;">Siguiente ›</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

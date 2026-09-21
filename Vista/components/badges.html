@@ -1,0 +1,6 @@
+{# Etiqueta de estado de un pedido, igual en todas las tablas y pantallas.
+   Uso: {% from 'components/badges.html' import estado_pedido %}  ...  {{ estado_pedido(pedido.estado) }} #}
+{% macro estado_pedido(estado) -%}
+{%- set clase = {'Completado': 'success', 'Aceptado': 'info', 'Pendiente': 'warning', 'Rechazado': 'danger', 'Cancelado': 'neutral'}.get(estado, 'neutral') -%}
+<span class="cx-badge-status cx-badge-{{ clase }}">{{ estado }}</span>
+{%- endmacro %}

@@ -1,0 +1,605 @@
+/* Capa visual CoAgrix: no modifica rutas, IDs, formularios ni comportamiento. */
+:root {
+   --verde-carbon: #123921;
+   --verde-oscuro: #0B2515;
+   --verde-medio: #2E7D32;
+   --verde-vivo: #5BAF3C;
+   --verde-suave: #EAF5E6;
+   --verde-oliva: #71824A;
+   --dorado: #F5A623;
+   --dorado-suave: #FCC85B;
+   --beige-natural: #F6E3B4;
+   --crema: #FAF8F2;
+   --blanco: #fff;
+   --gris-claro: #EEF1ED;
+   --gris-texto: #29342E;
+   --sombra: 0 14px 36px rgba(11, 37, 21, .12);
+   --radio: 16px;
+   --cx-green: var(--verde-medio);
+   --cx-green-dark: var(--verde-carbon);
+   --cx-gray-light: var(--gris-claro);
+   --cx-gray-dark: var(--gris-texto);
+   --cx-radius: var(--radio);
+   --cx-shadow: var(--sombra);
+   --cx-shadow-hover: 0 18px 42px rgba(11, 37, 21, .18);
+}
+
+body {
+   background: var(--crema);
+   color: var(--gris-texto)
+}
+
+.cx-header {
+   background: var(--verde-carbon);
+   box-shadow: 0 5px 18px rgba(0, 0, 0, .18);
+   border-bottom: 2px solid var(--dorado)
+}
+
+.cx-brand-text,
+.cx-nav a,
+.cx-icon-btn {
+   color: #fff
+}
+
+.cx-nav a:hover,
+.cx-nav a.active {
+   background: rgba(255, 255, 255, .13);
+   color: var(--dorado-suave)
+}
+
+.cx-user-btn {
+   background: rgba(255, 255, 255, .12);
+   color: #fff
+}
+
+.cx-icon-btn:hover {
+   background: rgba(255, 255, 255, .14)
+}
+
+.cx-menu-toggle span {
+   background: #fff
+}
+
+.cx-badge {
+   background: var(--dorado);
+   color: var(--verde-carbon)
+}
+
+.btn-primary {
+   background: linear-gradient(135deg, var(--verde-vivo), var(--verde-carbon));
+   border-color: var(--verde-carbon);
+   box-shadow: 0 7px 16px rgba(11, 37, 21, .2)
+}
+
+.btn-primary:hover {
+   filter: brightness(1.07);
+   box-shadow: var(--cx-shadow-hover)
+}
+
+.btn-outline {
+   color: var(--verde-carbon);
+   border-color: var(--verde-carbon)
+}
+
+.btn-outline:hover {
+   background: var(--verde-carbon)
+}
+
+.cx-card,
+.feature-card,
+.testimonial-card {
+   border: 1px solid rgba(11, 37, 21, .08);
+   border-radius: var(--radio);
+   box-shadow: var(--sombra)
+}
+
+.feature-card,
+.testimonial-card {
+   background: #fff;
+   transition: transform .25s ease, box-shadow .25s ease
+}
+
+.feature-card:hover,
+.testimonial-card:hover {
+   transform: translateY(-5px);
+   box-shadow: var(--cx-shadow-hover);
+   border-color: var(--dorado)
+}
+
+.cx-table th {
+   background: var(--verde-carbon);
+   color: #fff;
+   border-bottom: 0
+}
+
+.cx-table tr:nth-child(even) td {
+   background: #fafcf9
+}
+
+.cx-table tr:hover td {
+   background: var(--verde-suave)
+}
+
+.cx-input,
+.cx-select,
+input:not([type=checkbox]):not([type=radio]),
+select,
+textarea {
+   border: 1px solid #cbd8cd;
+   border-radius: 10px
+}
+
+.cx-input:focus,
+.cx-select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+   border-color: var(--verde-medio);
+   box-shadow: 0 0 0 3px rgba(91, 175, 60, .18)
+}
+
+.footer {
+   background: linear-gradient(180deg, var(--verde-carbon) 0%, var(--verde-oscuro) 100%) !important;
+   color: #e9f0e9
+}
+
+.footer a {
+   color: #d7e5d9
+}
+
+.footer a:hover {
+   color: var(--dorado-suave)
+}
+
+.logo-brand {
+   display: inline-flex;
+   align-items: center
+}
+
+/* Ícono de la cabecera: marco con anillo verde/dorado que gira, halo que
+   respira, flotación suave y entrada con rebote. */
+@property --logo-angle {
+   syntax: '<angle>';
+   inherits: false;
+   initial-value: 0deg
+}
+
+/* El tamaño se ajusta con --logo-size (cabecera de inicio 58px, panel 46px). */
+.logo-mark {
+   --logo-size: 58px;
+   --logo-radius: calc(var(--logo-size) * .31);
+   position: relative;
+   display: inline-block;
+   flex-shrink: 0;
+   width: var(--logo-size);
+   height: var(--logo-size);
+   border-radius: var(--logo-radius);
+   isolation: isolate;
+   animation: logo-pop .9s cubic-bezier(.34, 1.56, .64, 1) both, logo-float 5s ease-in-out .9s infinite
+}
+
+.logo-mark::before {
+   content: '';
+   position: absolute;
+   inset: -3px;
+   z-index: -1;
+   border-radius: calc(var(--logo-radius) + 3px);
+   background: conic-gradient(from var(--logo-angle), #5BAF3C, #F5A623, #FCC85B, #5BAF3C);
+   animation: logo-spin 6s linear infinite
+}
+
+.logo-mark::after {
+   content: '';
+   position: absolute;
+   inset: -12px;
+   z-index: -2;
+   border-radius: calc(var(--logo-radius) + 10px);
+   background: radial-gradient(circle, rgba(91, 175, 60, .5), rgba(245, 166, 35, .18) 55%, transparent 72%);
+   filter: blur(7px);
+   animation: logo-glow 3.2s ease-in-out infinite
+}
+
+/* `.logo-mark .landing-logo` gana a `.cx-brand img` (theme.css). */
+.logo-mark .landing-logo {
+   display: block;
+   width: var(--logo-size);
+   height: var(--logo-size);
+   box-sizing: border-box;
+   border: 3px solid #fff;
+   border-radius: var(--logo-radius);
+   box-shadow: none;
+   object-fit: cover;
+   background: #0b2515;
+   transition: transform .5s cubic-bezier(.34, 1.56, .64, 1)
+}
+
+/* Cabecera de los paneles: 52px, con menos relleno vertical en la barra para
+   que el ícono quede centrado sin agrandarla (52 + 2 x 10 = 72px, como antes). */
+.cx-brand .logo-mark {
+   --logo-size: 52px
+}
+
+@media (min-width: 701px) {
+   .cx-header-inner {
+      padding-top: 10px;
+      padding-bottom: 10px
+   }
+}
+
+.logo-brand:hover .logo-mark .landing-logo {
+   transform: scale(1.09) rotate(-6deg)
+}
+
+.logo-brand:hover .logo-mark::before {
+   animation-duration: 2s
+}
+
+@keyframes logo-spin {
+   to { --logo-angle: 360deg }
+}
+
+@keyframes logo-glow {
+   0%, 100% { opacity: .55; transform: scale(.95) }
+   50% { opacity: 1; transform: scale(1.12) }
+}
+
+/* Flotación simétrica (sube 2px y baja 2px alrededor del centro): antes solo
+   subía y el ícono se veía pegado hacia arriba. */
+@keyframes logo-float {
+   0%, 50%, 100% { transform: translateY(0) }
+   25% { transform: translateY(-2px) }
+   75% { transform: translateY(2px) }
+}
+
+@keyframes logo-pop {
+   from { opacity: 0; transform: scale(.55) rotate(-14deg) }
+   to { opacity: 1; transform: scale(1) rotate(0) }
+}
+
+@media (prefers-reduced-motion: reduce) {
+   .logo-mark,
+   .logo-mark::before,
+   .logo-mark::after {
+      animation: none
+   }
+}
+
+.hero {
+   position: relative;
+   isolation: isolate;
+   overflow: hidden;
+   background: linear-gradient(135deg, #123921, #1c4a2c)
+}
+
+.hero-video {
+   position: absolute;
+   inset: 0;
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   z-index: -3
+}
+
+/* Capa de oscurecimiento sobre el video: más oscura en el centro (donde
+   está el texto) y con un degradado vertical para que el header y el
+   indicador de scroll también tengan buen contraste. No se toca el video. */
+.hero-overlay {
+   position: absolute;
+   inset: 0;
+   z-index: -2;
+   background:
+      radial-gradient(ellipse 70% 65% at 50% 50%, rgba(6, 20, 12, .8) 0%, rgba(6, 20, 12, .5) 55%, rgba(6, 20, 12, .28) 100%),
+      linear-gradient(180deg, rgba(6, 20, 12, .6) 0%, rgba(6, 20, 12, .3) 22%, rgba(6, 20, 12, .3) 68%, rgba(6, 20, 12, .72) 100%)
+}
+
+.hero .hero-bg {
+   opacity: .22;
+   z-index: -1
+}
+
+.hero-badge {
+   background: rgba(245, 166, 35, .16) !important;
+   border: 1px solid rgba(245, 166, 35, .5) !important;
+   color: var(--dorado-suave) !important;
+   backdrop-filter: blur(6px)
+}
+
+.hero .highlight {
+   color: var(--dorado-suave) !important;
+   text-shadow: 0 3px 18px rgba(0, 0, 0, .5)
+}
+
+/* Título y texto secundario del hero: blanco con sombra suave para que se
+   lean bien sobre cualquier fotograma del video, sin cambiar el video. */
+.hero h1 {
+   color: #fff !important;
+   text-shadow: 0 3px 22px rgba(0, 0, 0, .55), 0 1px 3px rgba(0, 0, 0, .6)
+}
+
+.hero-desc {
+   color: rgba(255, 255, 255, .92) !important;
+   text-shadow: 0 2px 10px rgba(0, 0, 0, .4)
+}
+
+.hero .btn-ghost {
+   color: #fff !important;
+   border: 2px solid rgba(255, 255, 255, .55) !important
+}
+
+.hero .btn-ghost:hover {
+   background: rgba(255, 255, 255, .15) !important;
+   border-color: #fff !important;
+   color: #fff !important
+}
+
+.hero .btn-primary {
+   box-shadow: 0 6px 22px rgba(0, 0, 0, .35) !important
+}
+
+.hero .mouse {
+   border-color: rgba(255, 255, 255, .65) !important
+}
+
+.hero .wheel {
+   background: var(--dorado-suave) !important
+}
+
+.stats {
+   background: var(--verde-carbon) !important
+}
+
+.stat-item h3 {
+   color: var(--dorado-suave) !important
+}
+
+/* Las etiquetas quedaban gris azulado sobre el fondo verde oscuro. */
+.stat-item p {
+   color: #fff !important
+}
+
+/* Logo oficial de CoAgrix usado donde antes había un emoji como logo */
+.logo-icon-img {
+   width: 32px;
+   height: 32px;
+   object-fit: cover;
+   border-radius: 8px;
+   vertical-align: middle
+}
+
+.user-greeting {
+   color: var(--verde-carbon);
+   font-weight: 600;
+   display: flex;
+   align-items: center;
+   margin-right: .25rem
+}
+
+.nav-auth-mobile {
+   display: none
+}
+
+@media (max-width:768px) {
+   .nav-auth-mobile {
+      display: list-item
+   }
+}
+
+@media(max-width:700px) {
+   .cx-header-inner {
+      padding: 10px 16px;
+      gap: 10px
+   }
+
+   .cx-user-btn>span:last-child {
+      display: none
+   }
+
+   .hero-video {
+      display: none
+   }
+
+   .hero {
+      background: radial-gradient(circle at 70% 20%, #2c5a38 0, var(--verde-carbon) 45%, var(--verde-oscuro) 100%)
+   }
+}
+
+/* Pantallas de autenticación y registro (usan plantillas independientes). */
+body:has(.login-container),
+body:has(.registro) {
+   background: radial-gradient(circle at 15% 15%, #2c5a38 0, transparent 35%), linear-gradient(135deg, var(--verde-oscuro), var(--verde-carbon));
+   padding: 28px;
+}
+
+.login-container {
+   border-radius: 24px !important;
+   border: 1px solid rgba(245, 166, 35, .3) !important;
+   box-shadow: 0 28px 70px rgba(0, 0, 0, .32) !important;
+   overflow: hidden
+}
+
+.panel-info {
+   background: linear-gradient(145deg, var(--verde-oscuro), var(--verde-carbon) 58%, #245335) !important
+}
+
+.panel-form {
+   background: var(--crema) !important
+}
+
+.form-title {
+   color: var(--verde-carbon) !important
+}
+
+.form-subtitle {
+   color: var(--verde-medio) !important
+}
+
+.input-group label {
+   color: var(--verde-carbon) !important
+}
+
+.input-group input {
+   background: #fff !important;
+   border: 1px solid #cbd8cd !important;
+   border-radius: 10px !important
+}
+
+.input-group input:focus {
+   border-color: var(--verde-medio) !important;
+   box-shadow: 0 0 0 3px rgba(91, 175, 60, .16)
+}
+
+.btn-secondary {
+   border-color: var(--verde-carbon) !important;
+   color: var(--verde-carbon) !important;
+   border-radius: 10px !important
+}
+
+.btn-secondary:hover {
+   background: var(--verde-carbon) !important;
+   color: #fff !important
+}
+
+.registro {
+   background: rgba(250, 248, 242, .97) !important;
+   color: var(--gris-texto) !important;
+   border: 1px solid rgba(245, 166, 35, .35) !important;
+   border-radius: 22px !important
+}
+
+.registro .subtitulo,
+.registro .volver a {
+   color: #66736b !important
+}
+
+.registro .campo input,
+.registro .campo select {
+   background: #fff !important;
+   color: var(--gris-texto) !important;
+   border: 1px solid #cbd8cd !important
+}
+
+.registro .campo select option {
+   background: #fff;
+   color: var(--gris-texto)
+}
+
+/* Listados, perfiles, carrito, mensajes y paneles: superficie unificada. */
+.container {
+   max-width: 1240px
+}
+
+.section-header h1,
+.section-header h2,
+.container>h1,
+.container>h2 {
+   color: var(--verde-carbon)
+}
+
+.section-tag {
+   color: var(--verde-medio) !important;
+   background: var(--verde-suave) !important;
+   border-radius: 999px;
+   padding: 6px 12px
+}
+
+.feature-card img,
+.producto-imagen {
+   object-fit: cover;
+   border-radius: 14px 14px 0 0
+}
+
+.producto-card {
+   border-radius: var(--radio) !important;
+   overflow: hidden;
+   background: #fff
+}
+
+.filtros-panel {
+   background: #fff !important;
+   border: 1px solid rgba(11, 37, 21, .08);
+   border-radius: var(--radio) !important;
+   box-shadow: var(--sombra)
+}
+
+table {
+   background: #fff;
+   border-radius: var(--radio);
+   overflow: hidden;
+   box-shadow: var(--sombra)
+}
+
+table th {
+   background: var(--verde-carbon) !important;
+   color: #fff !important
+}
+
+table tr:nth-child(even) td {
+   background: #fafcf9
+}
+
+table tr:hover td {
+   background: var(--verde-suave) !important
+}
+
+.alert {
+   box-shadow: var(--sombra)
+}
+
+.cx-admin-content {
+   background: var(--crema)
+}
+
+.cx-sidebar {
+   background: var(--verde-oscuro) !important;
+   border: 0 !important
+}
+
+.cx-sidebar-title {
+   color: var(--dorado-suave) !important
+}
+
+.cx-sidebar a {
+   color: #edf5ee !important
+}
+
+.cx-sidebar a:hover {
+   background: rgba(255, 255, 255, .1) !important
+}
+
+.cx-sidebar a.active {
+   background: linear-gradient(135deg, var(--verde-vivo), var(--verde-medio)) !important
+}
+
+.cx-card {
+   border: 1px solid rgba(11, 37, 21, .09)
+}
+
+@media(max-width:900px) {
+
+   body:has(.login-container),
+   body:has(.registro) {
+      padding: 12px
+   }
+
+   .panel-info {
+      min-height: 260px
+   }
+
+   .cx-admin-content {
+      padding: 20px
+   }
+
+   .container {
+      padding-left: 18px !important;
+      padding-right: 18px !important
+   }
+
+   table {
+      font-size: .88rem
+   }
+
+   .cx-table th,
+   .cx-table td {
+      padding: 10px !important
+   }
+}

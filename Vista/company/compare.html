@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Comparar Precios - CoAgrix{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 0;">
+    <div class="section-header">
+        <h2>Comparar Precios</h2>
+        <p>Analiza los precios actuales entre vendedores y cómo ha evolucionado el precio de un producto en el tiempo.</p>
+    </div>
+
+    {% set compare_endpoint = 'company.compare_route' %}
+    {% include 'components/price_compare.html' %}
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% from 'components/stat_card.html' import render_stat_card %}
+{% block title %}Panel de Administrador - CoAgrix{% endblock %}
+{% block content %}
+<div class="cx-admin-layout">
+    {% include 'admin/_sidebar.html' %}
+    {% set active = 'dashboard' %}
+
+    <div class="cx-admin-content">
+        <div class="section-header" style="margin-bottom: 10px;">
+            <span class="section-tag">Administración</span>
+            <h2>Dashboard Administrativo</h2>
+            <p>Resumen general del sistema CoAgrix.</p>
+        </div>
+
+        <div class="cx-stats-grid">
+            {{ render_stat_card('👥', 'Usuarios Totales', stats.total_usuarios, numeric=stats.total_usuarios) }}
+            {{ render_stat_card('📢', 'Publicaciones', stats.total_publicaciones, numeric=stats.total_publicaciones) }}
+            {{ render_stat_card('🌾', 'Productos', stats.total_productos, numeric=stats.total_productos) }}
+            {{ render_stat_card('💬', 'Mensajes', stats.total_mensajes, numeric=stats.total_mensajes) }}
+            {{ render_stat_card('👨‍🌾', 'Campesinos', stats.total_campesinos, numeric=stats.total_campesinos) }}
+            {{ render_stat_card('🏢', 'Empresas', stats.total_empresas, numeric=stats.total_empresas) }}
+            {{ render_stat_card('🛍️', 'Comerciantes', stats.total_comerciantes, numeric=stats.total_comerciantes) }}
+            {{ render_stat_card('📦', 'Pedidos', stats.total_pedidos, numeric=stats.total_pedidos) }}
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; margin-top: 10px;">
+            <div class="cx-card">
+                <h3 class="cx-panel-title">👥 Últimos Usuarios Registrados</h3>
+                <table class="cx-table">
+                    <thead>
+                        <tr><th>Nombre</th><th>Email</th><th>Estado</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for user in recent_users %}
+                        <tr>
+                            <td>{{ user.nombre }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <span class="cx-badge-status {{ 'cx-badge-success' if user.estado == 'Activo' else 'cx-badge-danger' }}">
+                                    {{ user.estado }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{{ url_for('admin.users_route') }}" class="btn-outline btn-sm" style="margin-top: 15px; display: inline-block;">Ver todos los usuarios</a>
+            </div>
+
+            <div class="cx-card">
+                <h3 class="cx-panel-title">🕒 Actividad Reciente</h3>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    {% for item in activity %}
+                    <div style="display: flex; gap: 10px; align-items: start;">
+                        <span style="font-size: 1.2em;">{{ '👤' if item.tipo == 'usuario' else '📢' }}</span>
+                        <div>
+                            <p style="margin: 0; font-size: 0.92em;">
+                                {{ 'Nuevo usuario: ' if item.tipo == 'usuario' else 'Nueva publicación: ' }}
+                                <strong>{{ item.titulo }}</strong>
+                            </p>
+                            <p style="margin: 2px 0 0 0; font-size: 0.8em; color: #999;">{{ item.fecha }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p style="color: #999;">Sin actividad reciente.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
