@@ -2,31 +2,18 @@
    1. VARIABLES & RESET
    ========================================= */
 :root {
-<<<<<<< HEAD
     --primary: #123921;       /* Verde bosque profundo (del logo) */
     --secondary: #5BAF3C;     /* Verde hoja vibrante (del logo) */
     --accent: #F5A623;        /* Dorado del sol del logo */
     --accent-light: #FCC85B;  /* Dorado suave para degradados */
     --bg: #F8FAF3;            /* Crema muy suave, no cansa la vista */
-=======
-    --primary: #1A4D2E;       /* Verde bosque profundo */
-    --secondary: #4F9D69;     /* Verde hoja vibrante */
-    --accent: #E9C46A;        /* Amarillo cosecha/tierra */
-    --bg: #F8FAF5;            /* Crema muy suave, no cansa la vista */
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     --text: #1E293B;          /* Gris oscuro para texto */
     --text-light: #64748B;    /* Gris medio */
     --white: #FFFFFF;
     --glass: rgba(255, 255, 255, 0.75);
-<<<<<<< HEAD
     --shadow-sm: 0 4px 6px rgba(18, 57, 33, 0.05);
     --shadow-md: 0 10px 30px rgba(18, 57, 33, 0.1);
     --shadow-lg: 0 20px 40px rgba(18, 57, 33, 0.15);
-=======
-    --shadow-sm: 0 4px 6px rgba(26, 77, 46, 0.05);
-    --shadow-md: 0 10px 30px rgba(26, 77, 46, 0.1);
-    --shadow-lg: 0 20px 40px rgba(26, 77, 46, 0.15);
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     --radius: 16px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -175,7 +162,6 @@ ul { list-style: none; }
 }
 
 .btn-accent {
-<<<<<<< HEAD
     background: linear-gradient(135deg, var(--accent-light), var(--accent));
     color: var(--primary);
     font-weight: 700;
@@ -185,16 +171,6 @@ ul { list-style: none; }
     filter: brightness(1.05);
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(245, 166, 35, 0.45);
-=======
-    background: var(--accent);
-    color: var(--primary);
-    font-weight: 700;
-}
-.btn-accent:hover {
-    background: #d4b05a;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(233, 196, 106, 0.4);
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 }
 
 .btn-outline-light {
@@ -471,10 +447,7 @@ ul { list-style: none; }
     padding: 2.5rem;
     border-radius: var(--radius);
     box-shadow: var(--shadow-md);
-<<<<<<< HEAD
     border-top: 3px solid var(--accent);
-=======
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     position: relative;
 }
 
@@ -525,7 +498,6 @@ ul { list-style: none; }
     font-size: 0.85rem;
 }
 
-<<<<<<< HEAD
 /* ---- Carrusel de comentarios (2 por vista en escritorio, 1 en celular) ---- */
 .testimonials {
     position: relative;
@@ -841,15 +813,12 @@ ul { list-style: none; }
     .tc-form-card { padding: 1.5rem 1.2rem; }
 }
 
-=======
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 /* =========================================
    8. CTA SECTION
    ========================================= */
 .cta {
     position: relative;
     padding: 6rem 0;
-<<<<<<< HEAD
     /* Fondo difuminado en capas: brillo verde arriba a la izquierda, un toque
        dorado (el sol del logo) a la derecha, sin llegar al borde, sobre un degradado vertical
        que termina en el mismo verde del pie de página, sin corte visible. */
@@ -857,15 +826,11 @@ ul { list-style: none; }
         radial-gradient(ellipse 60% 90% at 12% 15%, rgba(91, 175, 60, 0.38) 0%, rgba(91, 175, 60, 0) 65%),
         radial-gradient(ellipse 38% 36% at 88% 50%, rgba(245, 166, 35, 0.17) 0%, rgba(245, 166, 35, 0) 100%),
         linear-gradient(180deg, #0b2a17 0%, var(--primary) 100%);
-=======
-    background: var(--primary);
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     color: var(--white);
     text-align: center;
     overflow: hidden;
 }
 
-<<<<<<< HEAD
 /* Halo suave detrás del texto (degradado radial, sin bordes duros). */
 .cta-bg .orb-cta {
     width: 900px;
@@ -874,23 +839,11 @@ ul { list-style: none; }
     background: radial-gradient(closest-side, rgba(91, 175, 60, 0.42), rgba(91, 175, 60, 0) 100%);
     filter: none;
     opacity: 0.55;
-=======
-.cta-bg .orb-cta {
-    width: 500px;
-    height: 500px;
-    background: var(--secondary);
-    filter: blur(120px);
-    opacity: 0.3;
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-<<<<<<< HEAD
     animation: pulse 8s ease-in-out infinite;
-=======
-    animation: pulse 6s ease-in-out infinite;
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 }
 
 .cta-inner {
@@ -898,7 +851,6 @@ ul { list-style: none; }
     z-index: 2;
 }
 
-<<<<<<< HEAD
 .cta h2,
 .cta .cta-inner > h2 {
     font-size: 2.8rem;
@@ -907,12 +859,6 @@ ul { list-style: none; }
     /* Blanco: la regla global `.container > h2` lo pintaba verde oscuro. */
     color: var(--white);
     text-shadow: 0 2px 24px rgba(0, 0, 0, 0.28);
-=======
-.cta h2 {
-    font-size: 2.8rem;
-    font-weight: 800;
-    margin-bottom: 1.5rem;
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 }
 
 .cta p {
@@ -934,11 +880,7 @@ ul { list-style: none; }
    9. FOOTER
    ========================================= */
 .footer {
-<<<<<<< HEAD
     background: linear-gradient(180deg, var(--primary) 0%, #0B2515 100%);
-=======
-    background: #0F2E1B; /* Verde muy oscuro */
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     color: rgba(255, 255, 255, 0.8);
     padding: 4rem 0 0;
 }

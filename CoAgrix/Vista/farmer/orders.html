@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Pedidos Recibidos - CoAgrix{% endblock %}
+{% block content %}
+{% from 'components/badges.html' import estado_pedido %}
+<div class="container" style="padding: 40px 0;">
+    <h1 style="margin-top: 0;">Pedidos Recibidos</h1>
+
+    <form method="GET" class="auto-filter-form" style="display:flex; gap:10px; flex-wrap:wrap; margin:20px 0;">
+        <input type="search" name="comprador" value="{{ filters.get('comprador', '') }}" placeholder="Comprador o correo" class="cx-input" style="min-width:190px; flex:1;">
+        <select name="estado" class="cx-select">
+            <option value="">Todos los estados</option>
+            {% for estado in ('Pendiente', 'Aceptado', 'Rechazado', 'Completado', 'Cancelado') %}
+            <option value="{{ estado }}" {% if filters.get('estado') == estado %}selected{% endif %}>{{ estado }}</option>
+            {% endfor %}
+        </select>
+        {% if filters %}<a href="{{ url_for('farmer.orders_route') }}" class="btn-outline">Limpiar</a>{% endif %}
+    </form>
+
+    {% if orders %}
+    <div class="cx-table-wrap"><table class="cx-table">
+        <thead>
+            <tr>
+                <th>Pedido</th>
+                <th>Comprador</th>
+                <th>Productos solicitados</th>
+                <th>Fecha</th>
+                <th class="t-center">Total</th>
+                <th class="t-center">Estado</th>
+                <th class="t-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in orders %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('farmer.order_detail_route', pedido_id=o.id) }}">#{{ o.id }}</a>
+                </td>
+                <td>{{ o.comprador_nombre }}<br><span style="color:#999; font-size:0.85em;">{{ o.email }}</span></td>
+                <td style="max-width: 280px;">
+                    {% if o.productos_detalle %}
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                        {% for item in o.productos_detalle %}
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <img src="{{ product_image_url(item.imagen) }}" alt="{{ item.titulo }}"
+                                 style="width:36px; height:36px; object-fit:cover; border-radius:6px; flex-shrink:0;">
+                            <span style="font-size:0.85em;">{{ item.titulo }}
+                                <span style="color:#999;">× {{ item.cantidad }} {{ item.unidad_medida }}</span>
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    Sin productos
+                    {% endif %}
+                </td>
+                <td class="nowrap">{{ o.fecha_pedido }}</td>
+                <td class="t-center">{{ o.total|cop if o.total else '-' }}</td>
+                <td class="t-center">
+                    {{ estado_pedido(o.estado) }}
+                </td>
+                <td class="t-center">
+                    {% if o.estado == 'Pendiente' %}
+                        <form method="POST" action="{{ url_for('farmer.accept_order_route', pedido_id=o.id) }}" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-primary" style="padding: 6px 12px; font-size: 0.85em;">Aceptar</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('farmer.reject_order_route', pedido_id=o.id) }}" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-outline" style="padding: 6px 12px; font-size: 0.85em;">Rechazar</button>
+                        </form>
+                    {% elif o.estado == 'Aceptado' %}
+                        <form method="POST" action="{{ url_for('farmer.complete_order_route', pedido_id=o.id) }}" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-primary" style="padding: 6px 12px; font-size: 0.85em;">Marcar completado</button>
+                        </form>
+                    {% else %}
+                        <span style="color: #999;">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table></div>
+    {% else %}
+    <div style="background: #f9f9f9; padding: 40px; border-radius: 8px; text-align: center; margin-top: 20px;">
+        <p style="color: #777; margin: 0;">Todavía no has recibido pedidos.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

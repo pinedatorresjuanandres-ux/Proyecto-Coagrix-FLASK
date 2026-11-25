@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="8" skipped="0" tests="22" time="7.400" timestamp="2026-11-25T15:56:04.980992-05:00" hostname="DESKTOP-GAGV1HU"><testcase classname="test_verificacion_qa" name="test_CP01_registro_campesino_valido" time="0.013" /><testcase classname="test_verificacion_qa" name="test_CP02_registro_correo_repetido" time="0.392" /><testcase classname="test_verificacion_qa" name="test_CP03_contrasena_menor_a_10_caracteres_se_rechaza" time="0.006"><failure message="AssertionError: El sistema aceptó una contraseña de 9 caracteres&#10;assert 'user' not in {'perfil': (10, '3101234567', 5), 'user': ('Juan Perez', 'nuevo@example.com', 'Abcdefgh1', 2)}">client = &lt;FlaskClient &lt;Flask 'app'&gt;&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001EC62B9E450&gt;
+
+    def test_CP03_contrasena_menor_a_10_caracteres_se_rechaza(client, monkeypatch):
+        """RF-1: «La contraseña debe cumplir mínimo 10 caracteres». Se usa una de 9."""
+        created = mock_registro(monkeypatch)
+        client.post('/register/campesino', data=dict(BASE_FORM, password='Abcdefgh1', password_confirm='Abcdefgh1'))
+&gt;       assert 'user' not in created, 'El sistema aceptó una contraseña de 9 caracteres'
+E       AssertionError: El sistema aceptó una contraseña de 9 caracteres
+E       assert 'user' not in {'perfil': (10, '3101234567', 5), 'user': ('Juan Perez', 'nuevo@example.com', 'Abcdefgh1', 2)}
+
+docs\05_Pruebas_y_Calidad\Evidencias\verificacion_qa\test_verificacion_qa.py:85: AssertionError</failure></testcase><testcase classname="test_verificacion_qa" name="test_CP04_registro_empresa_con_nit" time="0.197" /><testcase classname="test_verificacion_qa" name="test_CP05_nit_repetido_se_rechaza" time="0.248"><failure message="AssertionError: El sistema registró una empresa con un NIT ya existente&#10;assert 'perfil' not in {'perfil': (10, '900123456-1', '3101234567', 5, None), 'user': ('Juan Perez', 'otra@example.com', 'Contrasena10', 3)}">client = &lt;FlaskClient &lt;Flask 'app'&gt;&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001EC62BAE030&gt;
+
+    def test_CP05_nit_repetido_se_rechaza(client, monkeypatch):
+        """RF-19: «La información empresarial no puede repetirse». Se registra un NIT que ya existe con otro correo."""
+        created = mock_registro(monkeypatch)
+        monkeypatch.setattr('Modelo.user.query_db', lambda *a, **k: {'id': 7})  # el NIT ya existe en empresas
+        client.post('/register/empresa', data=dict(BASE_FORM, email='otra@example.com', nit='900123456-1',
+                                                   password='Contrasena10', password_confirm='Contrasena10'))
+&gt;       assert 'perfil' not in created, 'El sistema registró una empresa con un NIT ya existente'
+E       AssertionError: El sistema registró una empresa con un NIT ya existente
+E       assert 'perfil' not in {'perfil': (10, '900123456-1', '3101234567', 5, None), 'user': ('Juan Perez', 'otra@example.com', 'Contrasena10', 3)}
+
+docs\05_Pruebas_y_Calidad\Evidencias\verificacion_qa\test_verificacion_qa.py:102: AssertionError</failure></testcase><testcase classname="test_verificacion_qa" name="test_CP06_login_credenciales_incorrectas" time="0.503" /><testcase classname="test_verificacion_qa" name="test_CP07_login_correcto_abre_panel_del_rol" time="0.172" /><testcase classname="test_verificacion_qa" name="test_CP08_cuenta_inactiva_no_ingresa" time="0.610" /><testcase classname="test_verificacion_qa" name="test_CP09_cita_con_fecha_de_hoy_se_rechaza" time="0.450" /><testcase classname="test_verificacion_qa" name="test_CP10_cita_futura_se_crea_y_notifica" time="0.406" /><testcase classname="test_verificacion_qa" name="test_CP11_perfil_no_permite_correo_de_otro_usuario" time="0.437" /><testcase classname="test_verificacion_qa" name="test_CP12_cantidad_negativa_se_rechaza" time="0.399"><failure message="AssertionError: El servidor guardó una publicación con cantidad -5&#10;assert 'pub' not in {'pub': (1, 1, 'Papa', 'x', '1000', '900', ...)}">client = &lt;FlaskClient &lt;Flask 'app'&gt;&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001EC62C1E4E0&gt;
+
+    def test_CP12_cantidad_negativa_se_rechaza(client, monkeypatch):
+        """RF-9: «Las cantidades no pueden ser negativas» (validación en el servidor)."""
+        saved = {}
+        monkeypatch.setattr(farmer, 'get_farmer_data', lambda uid: {'id': 1})
+        monkeypatch.setattr(farmer, 'get_or_create_producto', lambda *a: 1)
+        monkeypatch.setattr(farmer, 'get_all_categories', lambda: [])
+        monkeypatch.setattr(farmer, 'create_publication', lambda *a, **k: saved.setdefault('pub', a) and 5)
+        login(client)
+        client.post('/farmer/publicaciones/crear', data={'nombre_producto': 'Papa', 'categoria_id': '1', 'descripcion': 'x',
+                                                        'precio_empresa': '1000', 'precio_comerciante': '900',
+                                                        'cantidad': '-5', 'unidad': 'kg'})
+&gt;       assert 'pub' not in saved, 'El servidor guardó una publicación con cantidad -5'
+E       AssertionError: El servidor guardó una publicación con cantidad -5
+E       assert 'pub' not in {'pub': (1, 1, 'Papa', 'x', '1000', '900', ...)}
+
+docs\05_Pruebas_y_Calidad\Evidencias\verificacion_qa\test_verificacion_qa.py:178: AssertionError</failure></testcase><testcase classname="test_verificacion_qa" name="test_CP13_calificar_sin_negociacion_se_rechaza" time="0.413"><failure message="AssertionError: Se guardó una calificación sin pedido completado&#10;assert 'review' not in {'review': (8, 5, 5, 'Bien')}">client = &lt;FlaskClient &lt;Flask 'app'&gt;&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001EC629E7C50&gt;
+
+    def test_CP13_calificar_sin_negociacion_se_rechaza(client, monkeypatch):
+        """RF-13: «Solo se podrá calificar después de una negociación realizada»."""
+        saved = {}
+        monkeypatch.setattr(product, 'user_has_reviewed', lambda *a: False)
+        monkeypatch.setattr(product, 'create_review', lambda *a: saved.setdefault('review', a))
+        login(client, user_id=8, role_name='Empresa', role_id=3)  # usuario sin pedidos
+        client.post('/productos/5/resena', data={'calificacion': '5', 'comentario': 'Bien'})
+&gt;       assert 'review' not in saved, 'Se guardó una calificación sin pedido completado'
+E       AssertionError: Se guardó una calificación sin pedido completado
+E       assert 'review' not in {'review': (8, 5, 5, 'Bien')}
+
+docs\05_Pruebas_y_Calidad\Evidencias\verificacion_qa\test_verificacion_qa.py:189: AssertionError</failure></testcase><testcase classname="test_verificacion_qa" name="test_CP14_no_se_elimina_publicacion_ajena" time="0.397" /><testcase classname="test_verificacion_qa" name="test_CP15_error_al_eliminar_no_se_reporta_como_exito" time="0.407"><failure message="AssertionError: assert 'Publicación eliminada correctamente.' not in ['Publicación eliminada correctamente.']&#10; +  where ['Publicación eliminada correctamente.'] = flashes(&lt;FlaskClient &lt;Flask 'app'&gt;&gt;)">client = &lt;FlaskClient &lt;Flask 'app'&gt;&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001EC62E9DF40&gt;
+
+    def test_CP15_error_al_eliminar_no_se_reporta_como_exito(client, monkeypatch):
+        """Si la base de datos no elimina la publicación (por ejemplo, porque ya tiene pedidos o
+        reseñas asociadas), el sistema no debe decir que se eliminó ni borrar su imagen."""
+        images = {}
+        monkeypatch.setattr(farmer, 'get_farmer_data', lambda uid: {'id': 1})
+        monkeypatch.setattr(farmer, 'get_publication_by_id', lambda pid: {'id': pid, 'campesino_id': 1, 'imagen': 'uploads/a.jpg'})
+        monkeypatch.setattr(farmer, 'delete_publication', lambda pid: False)  # execute_db devuelve False
+        monkeypatch.setattr(farmer, '_delete_physical_image', lambda ruta: images.setdefault('borrada', ruta))
+        login(client)
+        client.post('/farmer/publicaciones/9/eliminar')
+&gt;       assert 'Publicación eliminada correctamente.' not in flashes(client)
+E       AssertionError: assert 'Publicación eliminada correctamente.' not in ['Publicación eliminada correctamente.']
+E        +  where ['Publicación eliminada correctamente.'] = flashes(&lt;FlaskClient &lt;Flask 'app'&gt;&gt;)
+
+docs\05_Pruebas_y_Calidad\Evidencias\verificacion_qa\test_verificacion_qa.py:213: AssertionError</failure></testcase><testcase classname="test_verificacion_qa" name="test_CP16_usuario_no_admin_no_entra_al_panel" time="0.404" /><testcase classname="test_verificacion_qa" name="test_CP17_rutas_protegidas_exigen_sesion" time="0.002" /><testcase classname="test_verificacion_qa" name="test_CP18_formularios_rechazan_peticion_sin_token_csrf" time="0.030" /><testcase classname="test_verificacion_qa" name="test_CP19_cierre_de_sesion_no_acepta_get" time="0.025"><failure message="AssertionError: La sesión se cerró con una petición GET&#10;assert 302 == 405&#10; +  where 302 = &lt;WrapperTestResponse streamed [302 FOUND]&gt;.status_code">client = &lt;FlaskClient &lt;Flask 'app'&gt;&gt;
+
+    def test_CP19_cierre_de_sesion_no_acepta_get(client):
+        """Spec 001 (borrador): el cierre de sesión por GET permite que un sitio externo desconecte al usuario."""
+        login(client)
+        r = client.get('/logout')
+&gt;       assert r.status_code == 405, 'La sesión se cerró con una petición GET'
+E       AssertionError: La sesión se cerró con una petición GET
+E       assert 302 == 405
+E        +  where 302 = &lt;WrapperTestResponse streamed [302 FOUND]&gt;.status_code
+
+docs\05_Pruebas_y_Calidad\Evidencias\verificacion_qa\test_verificacion_qa.py:243: AssertionError</failure></testcase><testcase classname="test_verificacion_qa" name="test_CP20_inicio_de_sesion_renueva_la_sesion" time="0.700"><failure message="AssertionError: La sesión anterior se conservó tras iniciar sesión&#10;assert 'dato_previo' not in &lt;FileSystemSession {'dato_previo': 'x', 'user_id': 4, 'user_name': 'Ana', 'role_id': 3, 'role_name': 'Empresa'}&gt;">client = &lt;FlaskClient &lt;Flask 'app'&gt;&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001EC62EE95A0&gt;
+
+    def test_CP20_inicio_de_sesion_renueva_la_sesion(client, monkeypatch):
+        """Spec 001 (borrador): al iniciar sesión se deben descartar los datos de la sesión anterior."""
+        from werkzeug.security import generate_password_hash
+        user = {'id': 4, 'nombre': 'Ana', 'rol_id': 3, 'estado': 'Activo', 'password': generate_password_hash('Contrasena10')}
+        monkeypatch.setattr(auth, 'get_user_by_email', lambda e: user)
+        monkeypatch.setattr(auth, 'get_role_name', lambda rid: 'Empresa')
+        with client.session_transaction() as s:
+            s['dato_previo'] = 'x'
+        client.post('/login', data={'email': 'ana@example.com', 'password': 'Contrasena10'})
+        with client.session_transaction() as s:
+&gt;           assert 'dato_previo' not in s, 'La sesión anterior se conservó tras iniciar sesión'
+E           AssertionError: La sesión anterior se conservó tras iniciar sesión
+E           assert 'dato_previo' not in &lt;FileSystemSession {'dato_previo': 'x', 'user_id': 4, 'user_name': 'Ana', 'role_id': 3, 'role_name': 'Empresa'}&gt;
+
+docs\05_Pruebas_y_Calidad\Evidencias\verificacion_qa\test_verificacion_qa.py:256: AssertionError</failure></testcase><testcase classname="test_verificacion_qa" name="test_CP21_catalogo_filtra_por_categoria_y_ubicacion" time="0.498" /><testcase classname="test_verificacion_qa" name="test_CP22_las_notificaciones_de_citas_se_muestran_al_usuario" time="0.061"><failure message="AssertionError: Ningún módulo consulta la tabla notificaciones: se guardan pero nunca se muestran&#10;assert []">def test_CP22_las_notificaciones_de_citas_se_muestran_al_usuario():
+        """RF-10: el usuario debe ver las notificaciones de solicitudes. Se revisa que alguna
+        plantilla o controlador lea la tabla «notificaciones»."""
+        hits = []
+        for folder in ('Vista', 'Controlador', 'Modelo'):
+            for dirpath, _, files in os.walk(os.path.join(ROOT, folder)):
+                for f in files:
+                    if f.endswith(('.py', '.html')):
+                        txt = open(os.path.join(dirpath, f), encoding='utf-8').read()
+                        if 'FROM notificaciones' in txt or 'notificaciones WHERE' in txt:
+                            hits.append(f)
+&gt;       assert hits, 'Ningún módulo consulta la tabla notificaciones: se guardan pero nunca se muestran'
+E       AssertionError: Ningún módulo consulta la tabla notificaciones: se guardan pero nunca se muestran
+E       assert []
+
+docs\05_Pruebas_y_Calidad\Evidencias\verificacion_qa\test_verificacion_qa.py:282: AssertionError</failure></testcase></testsuite></testsuites>

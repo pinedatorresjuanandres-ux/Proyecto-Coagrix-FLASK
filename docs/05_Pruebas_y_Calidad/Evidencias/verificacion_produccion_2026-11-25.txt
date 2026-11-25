@@ -1,0 +1,33 @@
+Verificación en producción — https://coagrix.onrender.com
+Fecha: 25/11/2026 16:15 (hora local del equipo de revisión). Red: equipo SENA, Bogotá.
+Método: curl, peticiones GET a páginas públicas (solo HTML, sin recursos estáticos). No se crearon cuentas ni datos.
+
+== Mediciones previas en esta sesión ==
+Primera petición a / tras inactividad: 28,84 s (arranque del servicio en el plan gratuito de Render)
+/ : 1,25 s; 1,30 s | /login : 0,20 s; 0,19 s; 0,25 s | /register : 1,42 s; 1,44 s; 1,47 s
+/productos/catalogo : 5,87 s; 5,68 s; 5,25 s | /olvide-contrasena : 0,20 s; 0,25 s; 0,25 s
+/productos/catalogo (5 repeticiones): 5,51 s; 5,45 s; 5,31 s; 5,42 s; 5,35 s
+
+== Nueva medición para este registro ==
+/ -> HTTP 200 en 1.353515 s
+/ -> HTTP 200 en 1.169913 s
+/ -> HTTP 200 en 1.228968 s
+/login -> HTTP 200 en 0.183062 s
+/login -> HTTP 200 en 0.200852 s
+/login -> HTTP 200 en 0.214831 s
+/register -> HTTP 200 en 1.439511 s
+/register -> HTTP 200 en 1.250652 s
+/register -> HTTP 200 en 1.334490 s
+/productos/catalogo -> HTTP 200 en 5.471781 s
+/productos/catalogo -> HTTP 200 en 5.512206 s
+/productos/catalogo -> HTTP 200 en 5.637478 s
+
+== Seguridad ==
+HTTP/1.1 200 OK
+Set-Cookie: session=9bbf2fb5-bddd-46f1-9bb5-5d7647ed2f54; Secure; HttpOnly; Path=/; SameSite=Lax
+x-render-origin-server: waitress
+GET /logout sin sesión -> HTTP 302 (redirige a https://coagrix.onrender.com/)
+POST /login sin token CSRF -> HTTP 400
+GET /admin/dashboard sin sesión -> HTTP 302 (redirige a https://coagrix.onrender.com/login)
+GET /no-existe -> HTTP 404
+Cabeceras ausentes en /login: Strict-Transport-Security, X-Frame-Options, Content-Security-Policy (no aparecen arriba).

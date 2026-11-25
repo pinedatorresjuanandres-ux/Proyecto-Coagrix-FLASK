@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CoAgrix – Agricultura e Innovación{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.jpeg') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/coagrix-redesign.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tables.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% include 'components/header.html' %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container" style="margin-top: 20px;">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" style="padding: 15px; border-radius: var(--cx-radius-sm); margin-bottom: 10px; background-color: {% if category == 'error' %}#FFEBEE{% else %}#E8F5E9{% endif %}; color: {% if category == 'error' %}#C62828{% else %}#1B5E20{% endif %}; border-left: 4px solid {% if category == 'error' %}#C62828{% else %}#2E7D32{% endif %};">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <div class="logo" style="display:flex; align-items:center; gap:10px;">
+                    <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="CoAgrix" style="height:38px; width:38px; object-fit:cover; border-radius:8px;">
+                    <h2 style="margin:0;">CoAgrix</h2>
+                </div>
+                <p>Conectando el campo con el mercado mediante tecnología e innovación.</p>
+            </div>
+            <div class="footer-links">
+                <h5>Plataforma</h5>
+                <a href="{{ url_for('index') }}">Inicio</a>
+                <a href="{{ url_for('product.catalog_route') }}">Catálogo</a>
+                <a href="{{ url_for('index') }}#funcionalidades">Funcionalidades</a>
+            </div>
+            <div class="footer-links">
+                <h5>Cuenta</h5>
+                <a href="{{ url_for('auth.register_page') }}">Registrarse</a>
+                <a href="{{ url_for('auth.login_page') }}">Iniciar Sesión</a>
+            </div>
+            <div class="footer-links">
+                <h5>Legal</h5>
+                <a href="{{ url_for('terms_page') }}">Términos y Condiciones</a>
+                <a href="{{ url_for('privacy_page') }}">Política de Privacidad</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2026 CoAgrix – Todos los derechos reservados. Hecho con 💚 para el campo.</p>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+    <script>
+      // Los filtros GET se aplican al seleccionar un valor. En búsquedas de
+      // texto se espera una pausa corta para no recargar por cada tecla.
+      document.querySelectorAll('.auto-filter-form').forEach((form) => {
+        let searchTimer;
+        form.querySelectorAll('select, input[type="checkbox"], input[type="number"]').forEach((field) => {
+          field.addEventListener('change', () => form.requestSubmit());
+        });
+        form.querySelectorAll('input[type="search"], input[type="text"]').forEach((field) => {
+          field.addEventListener('input', () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => form.requestSubmit(), 500);
+          });
+        });
+      });
+    </script>
+</body>
+</html>

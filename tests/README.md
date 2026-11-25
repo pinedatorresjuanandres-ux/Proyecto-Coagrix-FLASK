@@ -1,11 +1,7 @@
 # Tests
 
 Esta suite usa `pytest` y el test client de Flask. No requiere un MySQL
-<<<<<<< HEAD
 real corriendo: la capa de modelos (`Modelo/*.py`) se mockea con
-=======
-real corriendo: la capa de modelos (`models/*.py`) se mockea con
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 `monkeypatch` en cada test, reemplazando `query_db`/`execute_db` por
 funciones falsas que devuelven datos de ejemplo.
 

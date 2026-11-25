@@ -9,6 +9,9 @@ os.environ.setdefault('FLASK_ENV', 'testing')
 os.environ.setdefault('SECRET_KEY', 'test-secret-key')
 os.environ.setdefault('MYSQL_HOST', 'localhost')
 os.environ.setdefault('MYSQL_DATABASE', 'coagrix_test')
+# En la app real el limitador viene apagado; en los tests se inicializa
+# (algunos llaman a limiter.reset(), que necesita su almacenamiento).
+os.environ.setdefault('RATELIMIT_ENABLED', '1')
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 

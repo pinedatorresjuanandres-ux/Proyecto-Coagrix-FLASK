@@ -17,9 +17,7 @@ instance/
 .env.*
 !.env.example
 
-# Uploads de usuarios (no versionar contenido subido)
-static/uploads/*
-!static/uploads/.gitkeep
+# Uploads: se versionan las imágenes del catálogo para que Render las tenga
 
 # Tests / cobertura
 .pytest_cache/
@@ -31,3 +29,6 @@ htmlcov/
 .idea/
 *.swp
 .DS_Store
+
+# Exportes con datos personales (no subir)
+exportes/

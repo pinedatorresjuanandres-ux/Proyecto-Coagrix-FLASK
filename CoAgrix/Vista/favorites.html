@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Mis Favoritos - CoAgrix{% endblock %}
+{% block content %}
+<div class="container" style="padding: 40px 0;">
+    <h1 style="margin-top: 0;">Mis Favoritos</h1>
+
+    {% if favorites %}
+    <div class="features-grid" style="margin-top: 20px;">
+        {% for pub in favorites %}
+        <div class="feature-card glass">
+            <div style="height: 160px; border-radius: 8px; overflow: hidden; margin-bottom: 12px;">
+                <img src="{{ product_image_url(pub.imagen) }}" alt="{{ pub.titulo }}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <h4>{{ pub.titulo }}</h4>
+            <p style="color: #666;">{{ pub.producto_nombre }} — {{ pub.campesino_nombre }}</p>
+            {% if session.get('role_name') == 'Empresa' %}
+            <p style="font-size: 1.3em; color: #2ecc71; font-weight: bold;">{{ pub.precio_empresa|cop }}</p>
+            {% elif session.get('role_name') == 'Comerciante' %}
+            <p style="font-size: 1.3em; color: #2ecc71; font-weight: bold;">{{ pub.precio_comerciante|cop }}</p>
+            {% else %}
+            <p style="font-size: 1em; color: #2ecc71; font-weight: bold; line-height: 1.4;">
+                Empresa: {{ pub.precio_empresa|cop }}<br>Comerciante: {{ pub.precio_comerciante|cop }}
+            </p>
+            {% endif %}
+            <a href="{{ url_for('product.detail', publicacion_id=pub.id) }}" class="btn-primary" style="margin-top: 10px; display: inline-block;">Ver Producto</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="background: #f9f9f9; padding: 40px; border-radius: 8px; text-align: center; margin-top: 20px;">
+        <p style="color: #777; margin: 0;">Todavía no tienes productos favoritos.</p>
+        <p style="color: #777; margin: 8px 0 0 0;">
+            Ve al <a href="{{ url_for('product.catalog_route') }}" style="color: #2ecc71;">catálogo</a> y marca los que más te interesen con ♡.
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

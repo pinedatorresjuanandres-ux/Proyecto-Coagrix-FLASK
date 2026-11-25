@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Contactar Comerciantes y Empresas - CoAgrix{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">{% endblock %}
+{% block content %}
+<main class="container chat-page">
+    <div class="chat-heading">
+        <div>
+            <span class="chat-eyebrow">Comunicación directa</span>
+            <h1>Comerciantes y Empresas</h1>
+            <p>Encuentra compradores registrados en CoAgrix e inicia una conversación con ellos.</p>
+        </div>
+        <a href="{{ url_for('message.inbox_route') }}" class="btn-outline" style="text-decoration:none; white-space:nowrap;">
+            Volver a Mensajes
+        </a>
+    </div>
+
+    <div class="cx-card" style="padding: 0; overflow-x: auto;">
+        <table class="cx-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th><th>Rol</th><th>Correo</th><th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for buyer in buyers %}
+                <tr>
+                    <td>{{ buyer.nombre }}</td>
+                    <td>
+                        <span class="cx-badge-status {{ 'cx-badge-success' if buyer.rol_nombre == 'Empresa' else 'cx-badge-neutral' }}">
+                            {{ buyer.rol_nombre }}
+                        </span>
+                    </td>
+                    <td>{{ buyer.email }}</td>
+                    <td>
+                        <a href="{{ url_for('message.conversation_route', otro_usuario_id=buyer.id) }}"
+                           class="btn-primary btn-sm" style="text-decoration:none; display:inline-block;">
+                            Contactar
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" style="text-align:center; color:#999; padding: 30px;">Todavía no hay comerciantes ni empresas registrados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}

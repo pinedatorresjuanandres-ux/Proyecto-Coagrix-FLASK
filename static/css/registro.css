@@ -10,11 +10,7 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-<<<<<<< HEAD
     background:linear-gradient(135deg,#0B2515,#123921);
-=======
-    background:linear-gradient(135deg,#0f172a,#1e293b,#16a34a);
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 }
 
 .registro{
@@ -52,11 +48,7 @@ body{
 }
 
 .volver a:hover {
-<<<<<<< HEAD
     color: #FCC85B;
-=======
-    color: #86efac;
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     text-decoration: underline;
 }
 
@@ -96,13 +88,8 @@ h1{
 }
 
 .campo input:focus{
-<<<<<<< HEAD
     border:1px solid #5BAF3C;
     box-shadow:0 0 10px rgba(91,175,60,.5);
-=======
-    border:1px solid #22c55e;
-    box-shadow:0 0 10px rgba(34,197,94,.5);
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 }
 
 button{
@@ -111,11 +98,7 @@ button{
     border:none;
     border-radius:12px;
 
-<<<<<<< HEAD
     background:linear-gradient(135deg,#5BAF3C,#123921);
-=======
-    background:linear-gradient(135deg,#22c55e,#15803d);
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 
     color:white;
     font-size:16px;
@@ -127,11 +110,7 @@ button{
 
 button:hover{
     transform:translateY(-2px);
-<<<<<<< HEAD
     box-shadow:0 8px 20px rgba(91,175,60,.4);
-=======
-    box-shadow:0 8px 20px rgba(34,197,94,.4);
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 }
 
 .login-link{
@@ -140,11 +119,7 @@ button:hover{
 }
 
 .login-link a{
-<<<<<<< HEAD
     color:#FCC85B;
-=======
-    color:#86efac;
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     text-decoration:none;
 }
 
@@ -169,20 +144,11 @@ button:hover{
 }
 
 .campo select:focus{
-<<<<<<< HEAD
     border:1px solid #5BAF3C;
     box-shadow:0 0 10px rgba(91,175,60,.5);
 }
 
 .campo select option{
     background:#123921;
-=======
-    border:1px solid #22c55e;
-    box-shadow:0 0 10px rgba(34,197,94,.5);
-}
-
-.campo select option{
-    background:#1e293b;
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     color:white;
 }

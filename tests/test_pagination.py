@@ -3,13 +3,8 @@ list_users y list_publications_for_moderation. Se mockea query_db para
 no depender de MySQL real: lo importante es verificar que se calcula bien
 el total, el LIMIT/OFFSET, y que sin `page` se mantiene el comportamiento
 antiguo (por compatibilidad con otros llamadores que no paginan)."""
-<<<<<<< HEAD
 import Modelo.product as product_model
 import Modelo.admin as admin_model
-=======
-import models.product as product_model
-import models.admin as admin_model
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 
 
 def test_get_active_publications_without_page_returns_plain_list(monkeypatch):

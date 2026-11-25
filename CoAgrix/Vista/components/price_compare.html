@@ -1,0 +1,207 @@
+{# Comparación de precios entre vendedores + historial de evolución.
+   Requiere en el contexto: price_comparison (None = todavía no se busca
+   nada; lista = resultados), buscar, productos, historial,
+   producto_seleccionado, producto_id, compare_endpoint (nombre del
+   endpoint Flask, ej. 'merchant.compare_route'). #}
+{% set todos = request.args.get('todos') %}
+
+<style>
+    .pc-search { max-width: 720px; margin: 30px auto 0; }
+    .pc-search-form { display: flex; align-items: center; gap: 10px; background: #fff; border: 1.5px solid #cbd8cd;
+        border-radius: 100px; padding: 6px 6px 6px 20px; box-shadow: 0 8px 24px rgba(18,57,33,.08); transition: border-color .2s, box-shadow .2s; }
+    .pc-search-form:focus-within { border-color: #2E7D32; box-shadow: 0 0 0 4px rgba(46,125,50,.14); }
+    .pc-search-form input[type=search] { flex: 1; border: 0 !important; outline: 0; background: transparent; font-size: 1rem; padding: 10px 4px; min-width: 0; box-shadow: none !important; }
+    .pc-search-form input[type=search]::-webkit-search-cancel-button { display: none; }
+    .pc-search-form .btn-primary { border-radius: 100px; padding: 11px 26px; }
+    .pc-clear { color: #777; font-size: .9rem; text-decoration: none; padding: 0 10px; white-space: nowrap; }
+    .pc-clear:hover { color: #123921; }
+    .pc-note { text-align: center; color: #6b7280; margin: 12px 0 0; font-size: .9rem; }
+    .pc-note a { color: #2E7D32; font-weight: 600; }
+
+    .pc-empty { max-width: 720px; margin: 30px auto 0; text-align: center; background: #fff; border: 1px dashed #cbd8cd;
+        border-radius: 20px; padding: 44px 24px; color: #6b7280; }
+    .pc-empty .pc-empty-icon { font-size: 2.4rem; }
+    .pc-empty h4 { margin: 10px 0 6px; color: #123921; }
+
+    .pc-count { margin: 30px 0 12px; color: #4b5563; }
+    .pc-card { background: #fff; border: 1px solid rgba(18,57,33,.1); border-radius: 18px; overflow: hidden; box-shadow: 0 10px 30px rgba(18,57,33,.08); }
+    .pc-scroll { overflow-x: auto; }
+    .pc-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+    .pc-table th { padding: 14px 18px; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; text-align: center; }
+    .pc-table th:first-child, .pc-table td:first-child { text-align: left; }
+    .pc-table td { padding: 16px 18px; text-align: center; border-top: 1px solid #edf0ec; }
+    .pc-table tbody tr:hover td { background: #f6faf5; }
+    .pc-name { font-weight: 700; color: #123921; }
+    .pc-price { display: inline-block; padding: 5px 14px; border-radius: 100px; font-weight: 600; font-size: .92rem; }
+    .pc-price--low { background: #e6f4e7; color: #1b6b25; }
+    .pc-price--high { background: #fdf0e1; color: #a8590a; }
+    .pc-muted { color: #b0b6ad; }
+    .pc-diff { font-weight: 600; color: #123921; }
+    .pc-badge { display: inline-block; padding: 4px 12px; border-radius: 100px; background: #f1f3ef; color: #4b5563; font-size: .85rem; }
+    .pc-badge--multi { background: #e8eefc; color: #2a4a9e; }
+</style>
+
+<!-- Buscador de producto -->
+<div class="pc-search">
+    <form method="GET" action="{{ url_for(compare_endpoint) }}" class="auto-filter-form pc-search-form">
+        <span aria-hidden="true">🔍</span>
+        <input type="search" name="buscar" value="{{ buscar or '' }}" placeholder="Busca un producto: café, papa, mango…"
+               autocomplete="off" aria-label="Buscar producto"
+               {% if buscar %}autofocus onfocus="this.setSelectionRange(this.value.length, this.value.length)"{% endif %}>
+        {% if buscar or todos %}<a href="{{ url_for(compare_endpoint) }}" class="pc-clear">✕ Limpiar</a>{% endif %}
+        <button type="submit" class="btn-primary">Buscar</button>
+    </form>
+    <p class="pc-note">Escribe el nombre y verás cuánto cuesta entre los distintos vendedores.
+        {% if not todos %}<a href="{{ url_for(compare_endpoint, todos=1) }}">Ver todos los productos</a>{% endif %}</p>
+</div>
+
+{% if price_comparison is none %}
+    <div class="pc-empty">
+        <div class="pc-empty-icon">🔎</div>
+        <h4>¿Qué producto quieres comparar?</h4>
+        <p style="margin:0;">Escribe su nombre arriba y te mostramos el precio mínimo, el máximo y cuántos vendedores lo ofrecen.</p>
+    </div>
+{% elif not price_comparison %}
+    <div class="pc-empty">
+        <div class="pc-empty-icon">😕</div>
+        <h4>No encontramos "{{ buscar }}"</h4>
+        <p style="margin:0;">Prueba con otra palabra o <a href="{{ url_for(compare_endpoint, todos=1) }}" style="color:#2E7D32; font-weight:600;">mira todos los productos</a>.</p>
+    </div>
+{% else %}
+    <p class="pc-count">
+        {% if buscar %}<strong>{{ price_comparison|length }}</strong> producto{{ '' if price_comparison|length == 1 else 's' }} para "<strong>{{ buscar }}</strong>"
+        {% else %}<strong>{{ price_comparison|length }}</strong> productos disponibles{% endif %}
+    </p>
+    <div class="pc-card">
+        <div class="pc-scroll">
+            <table class="pc-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio mínimo</th>
+                        <th>Precio máximo</th>
+                        <th>Diferencia</th>
+                        <th>Vendedores</th>
+                        <th>Historial</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in price_comparison %}
+                    {% set diferencia = item.precio_max - item.precio_min %}
+                    <tr>
+                        <td class="pc-name">{{ item.nombre }}</td>
+                        <td><span class="pc-price pc-price--low">{{ item.precio_min|cop }}</span></td>
+                        <td>{% if diferencia > 0 %}<span class="pc-price pc-price--high">{{ item.precio_max|cop }}</span>{% else %}<span class="pc-muted">—</span>{% endif %}</td>
+                        <td>{% if diferencia > 0 %}<span class="pc-diff">{{ diferencia|cop }}</span>{% else %}<span class="pc-muted">—</span>{% endif %}</td>
+                        <td><span class="pc-badge {{ 'pc-badge--multi' if item.num_vendedores > 1 else '' }}">{{ item.num_vendedores }} vendedor{{ '' if item.num_vendedores == 1 else 'es' }}</span></td>
+                        <td>
+                            <a href="{{ url_for(compare_endpoint, producto_id=item.producto_id, buscar=buscar or None, todos=todos) }}#historial"
+                               class="btn-outline" style="padding: 6px 14px; font-size: 0.85em; text-decoration: none;">
+                                Ver evolución
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Selector rápido de producto -->
+<div id="historial" style="margin-top: 40px; scroll-margin-top: 90px;">
+    <h3>Historial de precios por producto</h3>
+    <form method="GET" action="{{ url_for(compare_endpoint) }}#historial" style="display: flex; gap: 10px; margin-top: 10px;">
+        {% if buscar %}<input type="hidden" name="buscar" value="{{ buscar }}">{% endif %}{% if todos %}<input type="hidden" name="todos" value="1">{% endif %}
+        <select name="producto_id" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+            <option value="">-- Selecciona un producto --</option>
+            {% for p in productos %}
+            <option value="{{ p.id }}" {% if producto_id == p.id %}selected{% endif %}>{{ p.nombre }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-primary">Ver historial</button>
+    </form>
+</div>
+
+{% if producto_id %}
+    <div style="margin-top: 30px;">
+        {% if historial %}
+            <h4>Evolución del precio de "{{ producto_seleccionado.nombre if producto_seleccionado else '' }}"</h4>
+
+            <canvas id="priceChart" style="max-width: 100%; margin: 20px 0; background: #fff; border-radius: 8px;"></canvas>
+
+            <div class="cx-table-wrap"><table class="cx-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Vendedor</th>
+                        <th>Publicación</th>
+                        <th class="t-center">Precio Anterior</th>
+                        <th class="t-center">Precio Nuevo</th>
+                        <th class="t-center">Cambio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in historial %}
+                    {% set diferencia = h.precio_nuevo - h.precio_anterior %}
+                    <tr>
+                        <td>{{ h.fecha_cambio }}</td>
+                        <td>{{ h.campesino_nombre }}</td>
+                        <td>{{ h.titulo }}</td>
+                        <td class="t-center">{{ h.precio_anterior|cop }}</td>
+                        <td class="t-center"><strong>{{ h.precio_nuevo|cop }}</strong></td>
+                        <td class="t-center" style="color: {{ '#e74c3c' if diferencia > 0 else ('#27ae60' if diferencia < 0 else '#999') }};">
+                            {% if diferencia > 0 %}▲{% elif diferencia < 0 %}▼{% else %}—{% endif %}
+                            {{ diferencia|abs|cop if diferencia != 0 else '' }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table></div>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+            <script>
+                const ctx = document.getElementById('priceChart');
+                const historial = {{ historial|tojson }};
+
+                // Agrupa los puntos por vendedor para dibujar una línea por cada uno
+                const porVendedor = {};
+                historial.forEach(h => {
+                    const key = h.campesino_nombre;
+                    if (!porVendedor[key]) porVendedor[key] = [];
+                    porVendedor[key].push({ x: h.fecha_cambio, y: parseFloat(h.precio_nuevo) });
+                });
+
+                const colores = ['#2ecc71', '#e74c3c', '#3498db', '#f39c12', '#9b59b6', '#1abc9c'];
+                const datasets = Object.keys(porVendedor).map((vendedor, i) => ({
+                    label: vendedor,
+                    data: porVendedor[vendedor],
+                    borderColor: colores[i % colores.length],
+                    backgroundColor: colores[i % colores.length],
+                    tension: 0.2,
+                    fill: false
+                }));
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: { datasets: datasets },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: { type: 'category', title: { display: true, text: 'Fecha' } },
+                            y: { title: { display: true, text: 'Precio (COP)' }, beginAtZero: false }
+                        },
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+            </script>
+        {% else %}
+            <p style="color: #999;">Este producto todavía no tiene cambios de precio registrados.</p>
+        {% endif %}
+    </div>
+{% endif %}
+
+<div style="background: #f0f9ff; padding: 20px; border-radius: 8px; margin-top: 30px; border-left: 4px solid #2ecc71;">
+    <h4 style="margin-top: 0;">Consejo</h4>
+    <p>Usa el historial de precios para detectar tendencias: si un producto sube de precio con frecuencia en temporada, negocia con anticipación o busca proveedores alternativos.</p>
+</div>

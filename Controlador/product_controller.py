@@ -120,6 +120,9 @@ def add_review_action(publicacion_id):
 
 
 def list_favorites():
+    if 'user_id' not in session:
+        flash('Debes iniciar sesión para ver tus favoritos.', 'error')
+        return redirect(url_for('auth.login_page'))
     favorites = get_user_favorites(session['user_id'])
     return render_template('favorites.html', favorites=favorites)
 

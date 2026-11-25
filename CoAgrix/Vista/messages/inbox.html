@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Mensajes - CoAgrix{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">{% endblock %}
+{% block content %}
+<main class="container chat-page">
+    <div class="chat-heading">
+        <div><span class="chat-eyebrow">Comunicación directa</span><h1>Mensajes</h1><p>Conversa con agricultores, empresas y comerciantes de tu red.</p></div>
+        {% if session.get('role_name') == 'Campesino' %}
+        <a href="{{ url_for('message.contacts_route') }}" class="btn-primary" style="text-decoration:none; white-space:nowrap;">
+            + Contactar Comerciantes/Empresas
+        </a>
+        {% endif %}
+    </div>
+    <div class="message-layout">
+        <aside class="message-list">
+            <div class="message-list-header">
+                <h2>Bandeja de entrada{% if unread_count %} <span class="unread-badge">{{ unread_count }}</span>{% endif %}</h2>
+                <form method="GET" class="auto-filter-form">
+                    <select name="estado" class="cx-select message-filter" aria-label="Filtrar conversaciones">
+                        <option value="">Todas las conversaciones</option>
+                        <option value="no_leidos" {% if filters.get('estado') == 'no_leidos' %}selected{% endif %}>No leídos</option>
+                        <option value="leidos" {% if filters.get('estado') == 'leidos' %}selected{% endif %}>Leídos</option>
+                    </select>
+                </form>
+            </div>
+            {% for c in conversations %}
+            <a class="message-card{{ ' pinned' if c.fijado }}" href="{{ url_for('message.conversation_route', otro_usuario_id=c.otro_usuario_id) }}">
+                <span class="message-avatar">{{ c.nombre[0]|upper }}</span>
+                <span class="message-copy"><span class="message-head"><strong>{{ '📌 ' if c.fijado }}{{ c.nombre }}</strong><time>{{ c.ultima_fecha.strftime('%d/%m') if c.ultima_fecha else '' }}</time></span><small>{{ 'Administración · ' if c.fijado }}{{ c.email }}</small><p>{{ c.ultimo_mensaje or 'Sin mensajes todavía.' }}</p></span>
+                {% if c.no_leidos %}<span class="unread-badge">{{ c.no_leidos }}</span>{% endif %}
+            </a>
+            {% endfor %}
+        </aside>
+        <section class="conversation empty-conversation"><span>💬</span><h2>{% if conversations %}Selecciona una conversación{% else %}Todavía no tienes conversaciones{% endif %}</h2><p>{% if conversations %}Elige un contacto para ver los mensajes y continuar la conversación.{% else %}Ve al <a href="{{ url_for('product.catalog_route') }}">catálogo</a> y contacta a un productor desde la ficha de su producto.{% endif %}</p></section>
+    </div>
+</main>
+{% endblock %}

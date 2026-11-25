@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoAgrix – Agricultura e Innovación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/coagrix-redesign.css') }}">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <div class="container header-inner">
+            <a href="#inicio" class="logo logo-brand" aria-label="CoAgrix, ir al inicio">
+                <span class="logo-mark">
+                    <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="CoAgrix" class="landing-logo">
+                </span>
+            </a>
+            <nav class="nav-menu" id="navMenu">
+                <ul>
+                    <li><a href="#inicio" class="active">Inicio</a></li>
+                    <li><a href="#funcionalidades">Funcionalidades</a></li>
+                    <li><a href="#testimonios">Testimonios</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                    {% if session.get('user_id') %}
+                        <li class="nav-auth-mobile"><a href="{{ url_for('auth.logout_action') }}">Cerrar Sesión ({{ session.get('user_name') }})</a></li>
+                    {% else %}
+                        <li class="nav-auth-mobile"><a href="{{ url_for('auth.login_page') }}">Iniciar Sesión</a></li>
+                        <li class="nav-auth-mobile"><a href="{{ url_for('auth.register_page') }}">Registrarse</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="header-actions">
+                {% if session.get('user_id') %}
+                    <span class="user-greeting">Hola, {{ session.get('user_name') }}</span>
+                    {% if session.get('role_name') == 'Campesino' %}
+                        <a href="{{ url_for('farmer.dashboard') }}" class="btn-outline">Mi Panel</a>
+                    {% elif session.get('role_name') == 'Empresa' %}
+                        <a href="{{ url_for('company.dashboard_route') }}" class="btn-outline">Mi Panel</a>
+                    {% elif session.get('role_name') == 'Comerciante' %}
+                        <a href="{{ url_for('merchant.dashboard_route') }}" class="btn-outline">Mi Panel</a>
+                    {% elif session.get('role_name') == 'Administrador' %}
+                        <a href="{{ url_for('admin.dashboard_route') }}" class="btn-outline">Panel Admin</a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.logout_action') }}" class="btn-primary">Cerrar Sesión</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login_page') }}" class="btn-outline">Iniciar Sesión</a>
+                    <a href="{{ url_for('auth.register_page') }}" class="btn-primary">Registrarse</a>
+                {% endif %}
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero" id="inicio">
+        <video class="hero-video" autoplay muted loop playsinline poster="{{ url_for('static', filename='img/logo.jpeg') }}" aria-hidden="true">
+            <source src="{{ url_for('static', filename='videos/campo.mp4') }}" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-bg">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+            <div class="grid-lines"></div>
+        </div>
+        <div class="container hero-content">
+            <span class="hero-badge">Mercado agrícola conectado</span>
+            <h1>Conectamos el <span class="highlight">Campo</span> con el <span class="highlight">Mercado</span></h1>
+            <p class="hero-desc">Conectamos productores, empresas y comerciantes para que los productos del campo lleguen a mejores oportunidades de negocio.</p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('auth.register_page') }}" class="btn-primary btn-lg">Comenzar Gratis</a>
+                <a href="#funcionalidades" class="btn-ghost btn-lg">Ver Más ↓</a>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIOS: comentarios de los usuarios de la plataforma -->
+    <section class="testimonials" id="testimonios">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Testimonios</span>
+                <h2>Lo que dice el campo</h2>
+                <p>Campesinos, empresas y comerciantes cuentan cómo usan CoAgrix.</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% for category, message in messages %}
+                <div class="tc-flash tc-flash--{{ 'ok' if category == 'success' else 'error' }}" role="alert">{{ message }}</div>
+              {% endfor %}
+            {% endwith %}
+
+            {% if comentarios %}
+            <div class="tcarousel" id="tCarousel">
+                <button type="button" class="tc-btn tc-prev" id="tcPrev" aria-label="Comentarios anteriores">
+                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="tc-viewport" id="tcViewport" tabindex="0" aria-label="Comentarios de usuarios">
+                    <div class="tc-track">
+                        {% for c in comentarios %}
+                        <article class="testimonial-card">
+                            <div>
+                                <svg class="tc-quote-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 28c0-8.4 4.6-14.2 12-16.6l1.6 3.6c-4 1.7-6.2 4.4-6.6 7.6H22V38H10V28zm17 0c0-8.4 4.6-14.2 12-16.6l1.6 3.6c-4 1.7-6.2 4.4-6.6 7.6H39V38H27V28z"/></svg>
+                                <p class="quote">{{ c.texto }}</p>
+                            </div>
+                            <div class="author">
+                                <div class="author-avatar tc-avatar--{{ c.rol|lower }}">{{ {'Campesino': '👨‍🌾', 'Empresa': '🏢', 'Comerciante': '🛒'}.get(c.rol, '👤') }}</div>
+                                <div>
+                                    <h5>{{ c.nombre }}</h5>
+                                    <div class="tc-meta">
+                                        <span class="tc-role tc-role--{{ c.rol|lower }}">{{ c.rol }}</span>
+                                        {% if c.municipio %}<span class="tc-place">📍 {{ c.municipio }}</span>{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+                <button type="button" class="tc-btn tc-next" id="tcNext" aria-label="Comentarios siguientes">
+                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+            <div class="tc-dots" id="tcDots" aria-label="Páginas de comentarios"></div>
+            {% else %}
+            <p class="tc-empty">Aún no hay comentarios. ¡Sé el primero en contarnos tu experiencia!</p>
+            {% endif %}
+
+            {# Solo se muestra con sesión iniciada: quien no la tiene no ve nada aquí. #}
+            {% if session.get('user_id') %}
+            <div class="tc-form-card">
+                <div class="tc-form-icon" aria-hidden="true">💬</div>
+                <h3>{{ 'Edita tu comentario' if mi_comentario else 'Cuéntanos tu experiencia' }}</h3>
+                <p class="tc-form-sub">Publicas como <strong>{{ session.get('user_name') }}</strong>. Cada persona tiene un solo comentario y puede cambiarlo cuando quiera.</p>
+                <form method="POST" action="{{ url_for('comment.save_route') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <textarea name="texto" id="tcText" rows="4" minlength="10" maxlength="300" required placeholder="¿Cómo te ha ayudado CoAgrix?">{{ mi_comentario.texto if mi_comentario else '' }}</textarea>
+                    <div class="tc-form-row">
+                        <span class="tc-counter"><span id="tcCount">0</span>/300</span>
+                        <button type="submit" class="btn-primary">{{ 'Actualizar comentario' if mi_comentario else 'Publicar comentario' }}</button>
+                    </div>
+                </form>
+                {% if mi_comentario %}
+                    {% if mi_comentario.estado == 'Oculto' %}<p class="tc-form-sub">Tu comentario está en revisión y por ahora no se muestra.</p>{% endif %}
+                    <form method="POST" action="{{ url_for('comment.delete_route') }}" class="tc-delete" onsubmit="return confirm('¿Eliminar tu comentario?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="tc-link">Eliminar mi comentario</button>
+                    </form>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta" id="contacto">
+        <div class="cta-bg">
+            <div class="orb orb-cta"></div>
+        </div>
+        <div class="container cta-inner">
+            <h2>¿Listo para digitalizar<br>tu negocio agrícola?</h2>
+            <p>Únete a cientos de agricultores y empresas que ya están creciendo con CoAgrix.</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('auth.register_page') }}" class="btn-accent btn-lg">Crear Cuenta Gratis</a>
+                <a href="{{ url_for('auth.login_page') }}" class="btn-outline-light btn-lg">Ya tengo cuenta</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <div class="logo">
+                    <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="Logo CoAgrix" class="logo-icon-img">
+                    <h2>CoAgrix</h2>
+                </div>
+                <p>Conectando el campo con el mercado mediante tecnología e innovación.</p>
+            </div>
+            <div class="footer-links">
+                <h5>Plataforma</h5>
+                <a href="#inicio">Inicio</a>
+                <a href="#funcionalidades">Funcionalidades</a>
+                <a href="#testimonios">Testimonios</a>
+            </div>
+            <div class="footer-links">
+                <h5>Cuenta</h5>
+                <a href="{{ url_for('auth.register_page') }}">Registrarse</a>
+                <a href="{{ url_for('auth.login_page') }}">Iniciar Sesión</a>
+                <a href="#">Recuperar Contraseña</a>
+            </div>
+            <div class="footer-links">
+                <h5>Legal</h5>
+                <a href="{{ url_for('terms_page') }}">Términos y Condiciones</a>
+                <a href="{{ url_for('privacy_page') }}">Política de Privacidad</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2026 CoAgrix – Todos los derechos reservados. Hecho con 💚 para el campo.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script mínimo para el menú móvil -->
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+    </script>
+
+    <!-- Carrusel de comentarios, indicadores de página y contador de caracteres -->
+    <script>
+        (function () {
+            var carousel = document.getElementById('tCarousel');
+            if (carousel) {
+                var viewport = document.getElementById('tcViewport');
+                var track = viewport.querySelector('.tc-track');
+                var prev = document.getElementById('tcPrev');
+                var next = document.getElementById('tcNext');
+                var dotsBox = document.getElementById('tcDots');
+                var cards = viewport.querySelectorAll('.testimonial-card');
+
+                // Una "página" son tantas tarjetas como se ven a la vez (2 en escritorio, 1 en celular).
+                function metrics() {
+                    var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+                    var slot = cards[0].offsetWidth + gap;
+                    var visible = Math.max(1, Math.floor((track.clientWidth + gap + 1) / slot));
+                    return { slot: slot, visible: visible, pages: Math.ceil(cards.length / visible) };
+                }
+                function go(direction) {
+                    var m = metrics();
+                    viewport.scrollBy({ left: direction * m.visible * m.slot, behavior: 'smooth' });
+                }
+                function goToPage(index) {
+                    var m = metrics();
+                    viewport.scrollTo({ left: index * m.visible * m.slot, behavior: 'smooth' });
+                }
+
+                var builtFor = 0;
+                function buildDots(pages) {
+                    if (builtFor === pages) return;
+                    builtFor = pages;
+                    dotsBox.innerHTML = '';
+                    for (var i = 0; i < pages; i++) {
+                        var dot = document.createElement('button');
+                        dot.type = 'button';
+                        dot.className = 'tc-dot';
+                        dot.setAttribute('aria-label', 'Ir a la página ' + (i + 1));
+                        dot.addEventListener('click', (function (n) { return function () { goToPage(n); }; })(i));
+                        dotsBox.appendChild(dot);
+                    }
+                }
+
+                function refresh() {
+                    var m = metrics();
+                    var overflow = viewport.scrollWidth > viewport.clientWidth + 2;
+                    carousel.classList.toggle('tc-static', !overflow);
+                    var atStart = viewport.scrollLeft <= 2;
+                    var atEnd = viewport.scrollLeft + viewport.clientWidth >= viewport.scrollWidth - 2;
+                    prev.disabled = atStart;
+                    next.disabled = atEnd;
+
+                    buildDots(m.pages);
+                    var current = atEnd ? m.pages - 1 : Math.min(m.pages - 1, Math.round(viewport.scrollLeft / (m.visible * m.slot)));
+                    dotsBox.querySelectorAll('.tc-dot').forEach(function (dot, i) {
+                        dot.classList.toggle('active', i === current);
+                    });
+                }
+
+                prev.addEventListener('click', function () { go(-1); });
+                next.addEventListener('click', function () { go(1); });
+                viewport.addEventListener('scroll', refresh, { passive: true });
+                window.addEventListener('resize', refresh);
+                refresh();
+            }
+
+            var text = document.getElementById('tcText');
+            var count = document.getElementById('tcCount');
+            if (text && count) {
+                var update = function () { count.textContent = text.value.length; };
+                text.addEventListener('input', update);
+                update();
+            }
+        })();
+    </script>
+</body>
+</html>

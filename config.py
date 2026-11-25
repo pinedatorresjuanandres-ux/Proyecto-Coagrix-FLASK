@@ -4,14 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-<<<<<<< HEAD
-=======
-# En producción (FLASK_ENV=production) NO se permite arrancar con una
-# SECRET_KEY por defecto: si falta la variable de entorno, se genera una
-# aleatoria en cada arranque (lo cual invalida sesiones existentes) y se
-# imprime una advertencia bien visible, en vez de usar un valor fijo y
-# público como el que tenía este archivo originalmente.
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 _env = os.environ.get('FLASK_ENV', 'development').lower()
 _secret_key = os.environ.get('SECRET_KEY')
 
@@ -35,7 +27,6 @@ class Config:
     DEBUG = os.environ.get('FLASK_DEBUG', '1' if _env != 'production' else '0') == '1'
     SECRET_KEY = _secret_key
 
-<<<<<<< HEAD
     MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'localhost'
     MYSQL_USER = os.environ.get('MYSQL_USER') or 'root'
     MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or ''
@@ -44,35 +35,22 @@ class Config:
 
     SESSION_TYPE = 'filesystem'
 
-=======
-    # MySQL Database Configuration
-    MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'localhost'
-    MYSQL_USER = os.environ.get('MYSQL_USER') or 'root'
-    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or ''
-    MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE') or 'coagrix'
-    MYSQL_PORT = int(os.environ.get('MYSQL_PORT') or 3306)
-
-    # Session Configuration
-    SESSION_TYPE = 'filesystem'
-    # OJO: el nombre de esta carpeta NO debe ser "flask_session" — si el
-    # proyecto se ejecuta desde su propia carpeta raíz (que suele estar en
-    # sys.path), una carpeta local llamada igual que el paquete instalado
-    # "Flask-Session" tapa al paquete real y rompe
-    # "from flask_session import Session" con un ImportError confuso.
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     SESSION_FILE_DIR = os.environ.get('SESSION_FILE_DIR') or os.path.join(
         os.path.abspath(os.path.dirname(__file__)), '.flask_session_data'
     )
     SESSION_PERMANENT = False
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
-<<<<<<< HEAD
     SESSION_COOKIE_SECURE = _env == 'production'
 
     UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static/uploads')
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     WTF_CSRF_TIME_LIMIT = None  
     RATELIMIT_STORAGE_URI = os.environ.get('RATELIMIT_STORAGE_URI') or 'memory://'
+    # Límite de intentos (login, registro, comentarios). Apagado por defecto:
+    # en Render y en redes compartidas (SENA) todos llegan con la misma IP y
+    # se bloqueaban entre sí. Para activarlo: RATELIMIT_ENABLED=1
+    RATELIMIT_ENABLED = os.environ.get('RATELIMIT_ENABLED', '0') == '1'
 
     # Correo saliente (recuperar contraseña). Si SMTP_HOST está vacío no se
     # envían correos: el enlace se imprime en la consola del servidor.
@@ -82,21 +60,10 @@ class Config:
     SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD') or ''
     SMTP_FROM = os.environ.get('SMTP_FROM') or os.environ.get('SMTP_USER') or 'no-reply@coagrix.local'
     SMTP_USE_SSL = os.environ.get('SMTP_USE_SSL', '0') == '1'  # 1 = puerto 465 (SSL); 0 = STARTTLS (587)
+    # Envío por Google Apps Script (HTTPS). Si MAIL_SCRIPT_URL tiene valor,
+    # se usa en lugar de SMTP. Ver docs/correo_google_apps_script.md
+    MAIL_SCRIPT_URL = os.environ.get('MAIL_SCRIPT_URL') or ''
+    MAIL_SCRIPT_SECRET = os.environ.get('MAIL_SCRIPT_SECRET') or ''
     # Dirección pública del sitio, para armar los enlaces de los correos
     # (ej. https://coagrix.com). Vacío = se usa la del navegador de quien pide.
     APP_BASE_URL = (os.environ.get('APP_BASE_URL') or '').rstrip('/')
-=======
-    # Solo exige HTTPS para la cookie de sesion en produccion; en desarrollo
-    # local (http://127.0.0.1) esto romperia el login si estuviera activo.
-    SESSION_COOKIE_SECURE = _env == 'production'
-
-    # Uploads Configuration
-    UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static/uploads')
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max upload size
-
-    # CSRF (Flask-WTF)
-    WTF_CSRF_TIME_LIMIT = None  # los tokens no expiran por tiempo dentro de la sesion
-
-    # Rate limiting (Flask-Limiter)
-    RATELIMIT_STORAGE_URI = os.environ.get('RATELIMIT_STORAGE_URI') or 'memory://'
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0

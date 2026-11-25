@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Estadísticas de Ventas - CoAgrix{% endblock %}
+{% block content %}
+<div class="container" style="padding: 40px 0;">
+    <a href="{{ url_for('farmer.dashboard') }}" style="color: #2ecc71; text-decoration: none;">← Panel</a>
+    <h1 style="margin: 15px 0 5px;">Estadísticas de Ventas</h1>
+    <p style="color:#777; margin: 0 0 20px;">Lo que vendiste en el mes y lo que ganaste por cada producto. Solo cuentan los pedidos <strong>completados</strong>.</p>
+
+    <form method="GET" class="auto-filter-form" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:20px 0;">
+        <label for="mes" style="font-weight:600;">Mes:</label>
+        <select id="mes" name="mes" class="cx-select">
+            {% for m in meses %}
+            <option value="{{ m.valor }}" {% if m.valor == mes_actual %}selected{% endif %}>{{ m.nombre }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if rows %}
+    <div style="background: #f0f9ff; border-left: 4px solid #2ecc71; padding: 18px 25px; border-radius: 8px; max-width: 320px; margin-bottom: 20px;">
+        <p style="margin: 0; color: #666;">Ganancia de {{ mes_nombre }}</p>
+        <p style="margin: 5px 0 0 0; font-size: 1.6em; font-weight: bold;">{{ total|cop }}</p>
+    </div>
+
+    <div class="cx-table-wrap"><table class="cx-table">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th class="t-center">Vendido en el mes</th>
+                <th class="t-right">Ganancia</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in rows %}
+            <tr>
+                <td>{{ r.titulo }}</td>
+                <td class="t-center">{{ '%g' % r.cantidad_vendida }} {{ r.unidad_medida or '' }}</td>
+                <td class="t-right" style="font-weight: 600; color: #27ae60;">{{ r.ganancia|cop }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" style="font-weight: 700;">Total del mes</td>
+                <td class="t-right" style="font-weight: 700;">{{ total|cop }}</td>
+            </tr>
+        </tfoot>
+    </table></div>
+    {% else %}
+    <div style="background: #f9f9f9; padding: 40px; border-radius: 8px; text-align: center; margin-top: 20px;">
+        <p style="color: #777; margin: 0;">No tuviste ventas completadas en {{ mes_nombre }}.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

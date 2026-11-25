@@ -3,11 +3,7 @@ cuentas antiguas en texto plano se puedan seguir usando y queden
 re-hasheadas automáticamente tras un login exitoso."""
 from werkzeug.security import generate_password_hash
 
-<<<<<<< HEAD
 from Modelo.user import verify_password, upgrade_password_if_plaintext
-=======
-from models.user import verify_password, upgrade_password_if_plaintext
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 
 
 def test_verify_password_with_correct_hash():
@@ -34,11 +30,7 @@ def test_upgrade_password_if_plaintext_rehashes(monkeypatch):
         calls['args'] = args
         return True
 
-<<<<<<< HEAD
     monkeypatch.setattr('Modelo.user.execute_db', fake_execute_db)
-=======
-    monkeypatch.setattr('models.user.execute_db', fake_execute_db)
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 
     upgrade_password_if_plaintext(user_id=1, stored_password='clave123', plain_password='clave123')
 
@@ -54,11 +46,7 @@ def test_upgrade_password_if_plaintext_noop_when_already_hashed(monkeypatch):
     def fake_execute_db(query, args):
         calls['called'] = True
 
-<<<<<<< HEAD
     monkeypatch.setattr('Modelo.user.execute_db', fake_execute_db)
-=======
-    monkeypatch.setattr('models.user.execute_db', fake_execute_db)
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 
     hashed = generate_password_hash('clave123')
     upgrade_password_if_plaintext(user_id=1, stored_password=hashed, plain_password='clave123')

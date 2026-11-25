@@ -4,13 +4,8 @@ para no depender de un MySQL real: lo que se verifica es que las rutas
 llaman a las funciones de verificación de propiedad y respetan su
 resultado, no el SQL en sí.
 """
-<<<<<<< HEAD
 import Controlador.farmer_controller as farmer_routes
 import Controlador.cart_controller as cart_controller
-=======
-import routes.farmer_routes as farmer_routes
-import controllers.cart_controller as cart_controller
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 
 
 def test_farmer_cannot_view_foreign_order(client, login_as, monkeypatch):

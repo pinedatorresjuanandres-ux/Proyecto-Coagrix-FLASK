@@ -197,11 +197,7 @@ textarea{
 
 .guardar{
 
-<<<<<<< HEAD
     background:linear-gradient(135deg,#5BAF3C,#2E7D32);
-=======
-    background:#2E7D32;
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     color:white;
     border:none;
     padding:14px 30px;
@@ -213,11 +209,7 @@ textarea{
 
 .guardar:hover{
 
-<<<<<<< HEAD
     background:#123921;
-=======
-    background:#1B5E20;
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 
 }
 
@@ -260,68 +252,4 @@ aspect-ratio: 16 / 9;
 
 }
 
-<<<<<<< HEAD
 /* El footer usa el estilo global unificado definido en theme.css / coagrix-redesign.css */
-=======
-.footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 60px 0 0;
-    background: linear-gradient(135deg, #0f172a, #1e293b, #16a34a);
-    
-}
-
-.footer-inner {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 48px;
-    padding-bottom: 48px;
-}
-
-.footer-brand .logo {
-    margin-bottom: 14px;
-}
-
-.footer-brand p {
-    font-size: 14px;
-    color: white;
-    max-width: 260px;
-    line-height: 1.7;
-}
-
-.footer-links {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.footer-links h5 {
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.footer-links a {
-    font-size: 14px;
-    color: white;
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-.footer-links a:hover {
-    color: var(--green-light);
-}
-
-.footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding: 20px 40px;
-    text-align: center;
-}
-
-.footer-bottom p {
-    font-size: 13px;
-    color: var(--green-dark);
-}
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0

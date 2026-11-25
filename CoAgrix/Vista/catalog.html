@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Catálogo de Productos - CoAgrix{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+    .catalogo-buscador{
+        display:flex;
+        gap:15px;
+        margin: 20px 0 30px;
+    }
+    .catalogo-buscador input{
+        flex:1;
+        padding:14px 18px;
+        border:1px solid #ddd;
+        border-radius:10px;
+        font-size:15px;
+    }
+    .catalogo-buscador button{
+        background:var(--primary, #1A4D2E);
+        color:white;
+        border:none;
+        padding:0 26px;
+        border-radius:10px;
+        cursor:pointer;
+        font-size:15px;
+    }
+    .filtros-panel{
+        background:#f9f9f9;
+        padding:20px;
+        border-radius:14px;
+        height:fit-content;
+    }
+    .filtros-panel .campo-filtro{
+        margin-bottom:20px;
+    }
+    .filtros-panel label{
+        display:block;
+        font-weight:bold;
+        margin-bottom:8px;
+        font-size:14px;
+    }
+    .filtros-panel select,
+    .filtros-panel input{
+        width:100%;
+        padding:10px;
+        border:1px solid #ddd;
+        border-radius:8px;
+        font-size:14px;
+    }
+    .rango-precio{
+        display:flex;
+        gap:8px;
+    }
+    .filtro-transporte-check{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        font-weight:normal;
+        cursor:pointer;
+    }
+    .filtro-transporte-check input{
+        width:auto;
+        accent-color:#2E7D32;
+    }
+    .producto-card{
+        cursor:pointer;
+        transition:transform 0.3s;
+        overflow:hidden;
+        text-decoration:none;
+        color:inherit;
+        display:block;
+    }
+    .producto-card:hover{
+        transform:translateY(-6px);
+    }
+    .producto-imagen{
+        height:200px;
+        width:100%;
+        object-fit:cover;
+        border-radius:8px 8px 0 0;
+        display:block;
+    }
+    .producto-body{
+        padding:20px;
+    }
+    .badge-categoria-cat{
+        display:inline-block;
+        background:#E8F5E9;
+        color:#2E7D32;
+        font-size:11px;
+        font-weight:600;
+        padding:3px 10px;
+        border-radius:20px;
+        margin-bottom:8px;
+    }
+    .badge-transporte-cat{
+        display:inline-block;
+        font-size:12px;
+        font-weight:600;
+        padding:3px 10px;
+        border-radius:20px;
+        margin:8px 0;
+    }
+    .badge-transporte-cat.si{
+        background:#E3F2FD;
+        color:#1565C0;
+    }
+    .badge-transporte-cat.no{
+        background:#FBE9E7;
+        color:#BF360C;
+    }
+    .campesino-nombre{
+        font-size:0.85em;
+        color:#555;
+        display:flex;
+        align-items:center;
+        gap:6px;
+        margin:6px 0;
+    }
+    @media(max-width:900px){
+        .catalogo-grid{
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 0;">
+    <div class="section-header">
+        <h2>Catálogo de Productos</h2>
+        <p>Explora los productos disponibles de nuestros agricultores.</p>
+    </div>
+
+    <form method="GET" action="{{ url_for('product.catalog_route') }}" class="catalogo-buscador auto-filter-form">
+        <input type="text" name="buscar" placeholder="Buscar producto por nombre..." value="{{ filters.buscar if filters else '' }}">
+    </form>
+
+    <div class="catalogo-grid" style="display: grid; grid-template-columns: 260px 1fr; gap: 30px;">
+        <!-- Filtros -->
+        <div class="filtros-panel">
+            <h4 style="margin-top: 0;">Filtros</h4>
+            <form method="GET" action="{{ url_for('product.catalog_route') }}" class="auto-filter-form">
+                {% if filters and filters.buscar %}
+                <input type="hidden" name="buscar" value="{{ filters.buscar }}">
+                {% endif %}
+
+                <div class="campo-filtro">
+                    <label>Categoría</label>
+                    <select name="categoria">
+                        <option value="">Todas</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if filters and filters.categoria|string == cat.id|string %}selected{% endif %}>{{ cat.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="campo-filtro">
+                    <label>Ubicación</label>
+                    <select name="municipio">
+                        <option value="">Todas</option>
+                        {% for mun in municipios %}
+                        <option value="{{ mun.municipio }}" {% if filters and filters.municipio == mun.municipio %}selected{% endif %}>{{ mun.municipio }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="campo-filtro">
+                    <label>Unidad de medida</label>
+                    <select name="unidad">
+                        <option value="">Todas</option>
+                        {% for u in unidades %}
+                        <option value="{{ u.unidad_medida }}" {% if filters and filters.unidad == u.unidad_medida %}selected{% endif %}>{{ u.unidad_medida }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="campo-filtro">
+                    <label>Precio (COP)</label>
+                    <div class="rango-precio">
+                        <input type="number" name="precio_min" placeholder="Mín" min="0" value="{{ filters.precio_min if filters else '' }}">
+                        <input type="number" name="precio_max" placeholder="Máx" min="0" value="{{ filters.precio_max if filters else '' }}">
+                    </div>
+                </div>
+
+                <div class="campo-filtro">
+                    <label>Ordenar por</label>
+                    <select name="orden">
+                        <option value="recientes" {% if not filters or filters.orden in (None, '', 'recientes') %}selected{% endif %}>Más recientes</option>
+                        <option value="antiguos" {% if filters and filters.orden == 'antiguos' %}selected{% endif %}>Más antiguos</option>
+                        <option value="precio_asc" {% if filters and filters.orden == 'precio_asc' %}selected{% endif %}>Menor precio</option>
+                        <option value="precio_desc" {% if filters and filters.orden == 'precio_desc' %}selected{% endif %}>Mayor precio</option>
+                    </select>
+                </div>
+
+                <div class="campo-filtro">
+                    <label class="filtro-transporte-check">
+                        <input type="checkbox" name="transporte" value="1" {% if filters and filters.transporte %}checked{% endif %}>
+                        🚚 Solo con transporte
+                    </label>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Productos -->
+        <div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;">
+                {% for pub in publications %}
+                <a href="{{ url_for('product.detail', publicacion_id=pub.id) }}" class="feature-card glass producto-card">
+                    <img src="{{ product_image_url(pub.imagen) }}" alt="{{ pub.producto_nombre }}" class="producto-imagen">
+                    <div class="producto-body">
+                        <span class="badge-categoria-cat">{{ pub.categoria_nombre }}</span>
+                        <h4 style="margin: 0 0 6px 0;">{{ pub.producto_nombre }}</h4>
+                        {% if session.get('role_name') == 'Empresa' %}
+                        <p style="font-weight: bold; color: #2ecc71; font-size: 1.15em; margin: 0 0 6px 0;">{{ pub.precio_empresa|cop }} <span style="color:#999; font-weight:normal; font-size:0.7em;">/ {{ pub.unidad_medida }}</span></p>
+                        {% elif session.get('role_name') == 'Comerciante' %}
+                        <p style="font-weight: bold; color: #2ecc71; font-size: 1.15em; margin: 0 0 6px 0;">{{ pub.precio_comerciante|cop }} <span style="color:#999; font-weight:normal; font-size:0.7em;">/ {{ pub.unidad_medida }}</span></p>
+                        {% else %}
+                        <p style="font-weight: bold; color: #2ecc71; font-size: 0.95em; margin: 0 0 6px 0; line-height: 1.5;">
+                            Empresa: {{ pub.precio_empresa|cop }}<br>
+                            Comerciante: {{ pub.precio_comerciante|cop }}
+                            <span style="color:#999; font-weight:normal; font-size:0.85em;">/ {{ pub.unidad_medida }}</span>
+                        </p>
+                        {% endif %}
+                        <p style="color: #666; font-size: 0.85em; margin: 0;">{{ pub.cantidad_disponible }} {{ pub.unidad_medida }} disponibles</p>
+                        <span class="badge-transporte-cat {% if pub.transporte %}si{% else %}no{% endif %}">
+                            {% if pub.transporte %}🚚 Transporte Disponible{% else %}❌ Sin Transporte{% endif %}
+                        </span>
+                        <p class="campesino-nombre"><i class="fa-solid fa-user"></i> {{ pub.campesino_nombre }}</p>
+                        <p style="color: #999; font-size: 0.8em; margin: 0 0 10px 0;">{{ pub.departamento }}, {{ pub.municipio }}</p>
+                    </div>
+                </a>
+                {% else %}
+                <p>No hay productos disponibles con los filtros seleccionados.</p>
+                {% endfor %}
+            </div>
+
+            {% if total_pages and total_pages > 1 %}
+            <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top: 30px; flex-wrap:wrap;">
+                {% set base_args = request.args.to_dict() %}
+                {% if page > 1 %}
+                <a href="{{ url_for('product.catalog_route', **dict(base_args, page=page-1)) }}" style="padding:8px 14px; border-radius:8px; background:#f0f0f0; text-decoration:none; color:#333;">‹ Anterior</a>
+                {% endif %}
+                <span style="padding:8px 14px; color:#666;">Página {{ page }} de {{ total_pages }} ({{ total_results }} resultados)</span>
+                {% if page < total_pages %}
+                <a href="{{ url_for('product.catalog_route', **dict(base_args, page=page+1)) }}" style="padding:8px 14px; border-radius:8px; background:var(--primary, #1A4D2E); text-decoration:none; color:#fff;">Siguiente ›</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -10,7 +10,6 @@
     --paper-deep: #F3EEE1;
     --ink: #23301E;
     --ink-soft: #5B6355;
-<<<<<<< HEAD
     --forest: #123921;
     --leaf: #2E7D32;
     --leaf-light: #DCEBDC;
@@ -18,15 +17,6 @@
     --clay: #A9714F;
     --sun: #F5A623;
     --sun-soft: #FBE1A8;
-=======
-    --forest: #1F3D2B;
-    --leaf: #3F7D4E;
-    --leaf-light: #DCEBDC;
-    --wheat: #C79A56;
-    --clay: #A9714F;
-    --sun: #E8B23D;
-    --sun-soft: #F6E3B4;
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     --radius-lg: 28px;
     --radius-md: 16px;
     --ease: cubic-bezier(.22,.61,.36,1);
@@ -253,11 +243,7 @@ nav a:hover {
 .footer {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding: 60px 40px;
-<<<<<<< HEAD
     background: linear-gradient(135deg, var(--forest), #0B2515);
-=======
-    background: linear-gradient(135deg, #0f172a, #1e293b);
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     margin-top: 40px;
 }
 

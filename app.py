@@ -7,7 +7,6 @@ from flask_wtf import CSRFProtect
 
 from config import Config
 from extensions import limiter
-<<<<<<< HEAD
 from Controlador.auth_controller import auth_bp
 from Controlador.farmer_controller import farmer_bp
 from Controlador.admin_controller import admin_bp
@@ -28,32 +27,6 @@ app.config.from_object(Config)
 Session(app)
 
 csrf = CSRFProtect(app)
-=======
-from routes.auth_routes import auth_bp
-from routes.farmer_routes import farmer_bp
-from routes.admin_routes import admin_bp
-from routes.company_routes import company_bp
-from routes.merchant_routes import merchant_bp
-from routes.product_routes import product_bp
-from routes.message_routes import message_bp
-from routes.cart_routes import cart_bp
-from routes.api_routes import api_bp
-
-app = Flask(__name__)
-app.config.from_object(Config)
-
-# Initialize Session
-Session(app)
-
-# Protección CSRF global: exige un token válido en todo POST/PUT/PATCH/DELETE
-# que llegue por formulario. Los templates ya incluyen
-# {{ csrf_token() }} en cada <form method="POST">.
-csrf = CSRFProtect(app)
-
-# Limita intentos de login/registro para dificultar ataques de fuerza bruta.
-# La instancia vive en extensions.py para que routes/auth_routes.py pueda
-# importarla con el decorador @limiter.limit(...) sin import circular.
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 limiter.init_app(app)
 
 if not app.debug:
@@ -86,18 +59,10 @@ def inject_unread_messages():
     mostrar la insignia de mensajes sin leer en el header sin repetir la
     consulta en cada controlador."""
     if session.get('user_id'):
-<<<<<<< HEAD
         from Modelo.message import get_unread_count
         return {'unread_messages_count': get_unread_count(session['user_id'])}
     return {'unread_messages_count': 0}
 
-=======
-        from models.message import get_unread_count
-        return {'unread_messages_count': get_unread_count(session['user_id'])}
-    return {'unread_messages_count': 0}
-
-# Register Blueprints
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 app.register_blueprint(auth_bp)
 app.register_blueprint(farmer_bp)
 app.register_blueprint(admin_bp)
@@ -106,16 +71,9 @@ app.register_blueprint(merchant_bp)
 app.register_blueprint(product_bp)
 app.register_blueprint(message_bp)
 app.register_blueprint(cart_bp)
-<<<<<<< HEAD
 app.register_blueprint(appointment_bp)
 app.register_blueprint(account_bp)
 app.register_blueprint(comment_bp)
-=======
-app.register_blueprint(api_bp)
-# La API móvil usa token Bearer, no formularios/cookies; las rutas web
-# existentes continúan protegidas por CSRF.
-csrf.exempt(api_bp)
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 
 
 @app.after_request
@@ -128,20 +86,10 @@ def add_no_cache_headers(response):
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
-<<<<<<< HEAD
-=======
-    # React Native no usa cookies web; estas cabeceras permiten consumir la
-    # API desde el emulador o teléfono durante el desarrollo local.
-    if request.path.startswith('/api/'):
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     return response
 
 @app.route('/')
 def index():
-<<<<<<< HEAD
     user_id = session.get('user_id')
     return render_template(
         'index.html',
@@ -158,9 +106,6 @@ def terms_page():
 @app.route('/politica-de-privacidad')
 def privacy_page():
     return render_template('legal/privacidad.html')
-=======
-    return render_template('index.html')
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 
 
 @app.errorhandler(404)
@@ -175,10 +120,6 @@ def forbidden_error(error):
 
 @app.errorhandler(400)
 def bad_request_error(error):
-<<<<<<< HEAD
-=======
-    # También captura los CSRFError de Flask-WTF (heredan de BadRequest).
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     return render_template('errors/400.html', reason=getattr(error, 'description', None)), 400
 
 

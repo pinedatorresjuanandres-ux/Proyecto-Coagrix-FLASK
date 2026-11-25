@@ -12,7 +12,6 @@
     --paper-deep: #F3EEE1;
     --ink: #23301E;            /* texto principal, verde-carbón */
     --ink-soft: #5B6355;
-<<<<<<< HEAD
     --forest: #123921;         /* verde bosque profundo */
     --leaf: #2E7D32;           /* verde agrícola primario */
     --leaf-light: #DCEBDC;
@@ -20,15 +19,6 @@
     --clay: #A9714F;           /* tierra oscura */
     --sun: #F5A623;            /* amarillo suave */
     --sun-soft: #FBE1A8;
-=======
-    --forest: #1F3D2B;         /* verde bosque profundo */
-    --leaf: #3F7D4E;           /* verde agrícola primario */
-    --leaf-light: #DCEBDC;
-    --wheat: #C79A56;          /* tierra / trigo */
-    --clay: #A9714F;           /* tierra oscura */
-    --sun: #E8B23D;            /* amarillo suave */
-    --sun-soft: #F6E3B4;
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
     --radius-lg: 28px;
     --radius-md: 16px;
     --ease: cubic-bezier(.22,.61,.36,1);
@@ -296,12 +286,7 @@
 .footer {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding: 60px 0 0;
-<<<<<<< HEAD
     background: linear-gradient(135deg, var(--forest), #0B2515);
-=======
-    background: linear-gradient(135deg, #0f172a, #1e293b, #16a34a);
-    ;
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 }
 
 .footer-inner {
@@ -345,11 +330,7 @@
 }
 
 .footer-links a:hover {
-<<<<<<< HEAD
     color: var(--sun-soft);
-=======
-    color: var(--green-light);
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 }
 
 .footer-bottom {
@@ -360,9 +341,5 @@
 
 .footer-bottom p {
     font-size: 13px;
-<<<<<<< HEAD
     color: rgba(255,255,255,0.6);
-=======
-    color: var(--green-dark);
->>>>>>> fc18076200e88370b8ec4873b2330482c2206dc0
 }

@@ -1,0 +1,44 @@
+Verificación de solo lectura por rol — https://coagrix.onrender.com
+Fecha: 25/11/2026. Herramienta: script Python (urllib) con token CSRF. Dos mediciones por página.
+Cuentas: campesino@, empresa@, comerciante@ y admin@coagrix.com. Las contraseñas las entregó el equipo y no se registran en este archivo.
+No se crearon, modificaron ni eliminaron datos. Cada sesión se cerró al final.
+
+== Campesino ==
+Inicio de sesión: HTTP 302 -> /farmer/dashboard en 3,07 s
+  /farmer/dashboard: HTTP 200, 5,28 s y 4,41 s
+  /farmer/publicaciones: HTTP 200, 4,51 s y 4,3 s
+  /farmer/pedidos: HTTP 200, 3,62 s y 3,25 s | estados visibles: Aceptado, Cancelado, Completado, Pendiente, Rechazado
+  /farmer/estadisticas: HTTP 200, 3,69 s y 3,6 s
+  /mensajes/: HTTP 200, 3,34 s y 3,4 s
+  /cuenta/perfil: HTTP 200, 2,2 s y 2,48 s
+  /productos/catalogo: HTTP 200, 6,1 s y 6,3 s
+  Acceso a otro rol /admin/dashboard: HTTP 302 -> /login
+
+== Empresa ==
+Inicio de sesión: HTTP 302 -> /company/dashboard en 3,08 s
+  /company/dashboard: HTTP 200, 4,38 s y 4,4 s | estados visibles: Aceptado, Cancelado, Completado
+  /company/buscar: HTTP 200, 5,61 s y 5,39 s
+  /carrito/: HTTP 200, 1,13 s y 1,17 s
+  /carrito/pedidos: HTTP 200, 2,2 s y 2,22 s | estados visibles: Aceptado, Cancelado, Completado, Pendiente, Rechazado
+  /mensajes/: HTTP 200, 3,45 s y 3,14 s
+  /productos/catalogo: HTTP 200, 6,38 s y 6,5 s
+  Acceso a otro rol /farmer/dashboard: HTTP 302 -> /login
+
+== Comerciante ==
+Inicio de sesión: HTTP 302 -> /merchant/dashboard en 2,81 s
+  /merchant/dashboard: HTTP 200, 3,3 s y 3,3 s | estados visibles: Cancelado, Completado
+  /carrito/pedidos: HTTP 200, 2,37 s y 2,23 s | estados visibles: Aceptado, Cancelado, Completado, Pendiente, Rechazado
+  /mensajes/: HTTP 200, 3,51 s y 3,19 s
+  /productos/catalogo: HTTP 200, 6,48 s y 6,42 s
+  Acceso a otro rol /company/dashboard: HTTP 302 -> /login
+
+== Administrador ==
+Inicio de sesión: HTTP 302 -> /admin/dashboard en 3,02 s
+  /admin/dashboard: HTTP 200, 14,81 s y 13,97 s
+  /admin/usuarios: HTTP 200, 4,44 s y 4,35 s
+  /admin/publicaciones: HTTP 200, 3,41 s y 3,33 s
+  /admin/comentarios: HTTP 200, 3,45 s y 3,44 s
+  /mensajes/: HTTP 200, 3,27 s y 3,51 s
+  Acceso a otro rol /farmer/dashboard: HTTP 302 -> /login
+
+Ninguna página de ningún rol menciona notificaciones.
